@@ -2,13 +2,13 @@
   "manifest_version": 2,
 
   "name": "Todo Tab",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A simple todo list on new tab",
   "author": "27AE60",
   "homepage_url": "http://27ae60.com",
 
   "browser_action":  {
-    "default_title": "Chapi",
+    "default_title": "Todo Tab",
     "default_icon": "images/icon128.png"
   },
 

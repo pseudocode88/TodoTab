@@ -144,7 +144,8 @@
             'work',
             'personal',
             'write',
-            'draft'
+            'draft',
+            'publish'
         ];
 
         var tagsFound = null;
