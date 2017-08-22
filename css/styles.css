@@ -128,6 +128,7 @@ header button:hover {
     color: #333;
     background-color: #fff;
     cursor: pointer;
+    position: relative;
     /* letter-spacing: 0.1px; */
 }
 
@@ -166,6 +167,11 @@ header button:hover {
     display: block;
 }
 
+#todos .item:hover .creates-on {
+    display:block;
+    opacity: 0.5;
+}
+
 .btnToggle {
     padding: 0 1em;
 		width: 50px;
@@ -180,6 +186,10 @@ header button:hover {
     border: 1px solid #ccc;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.btnToggle i:hover {
+    background: #eee;
 }
 
 .btnToggle.active0 i {
@@ -453,4 +463,15 @@ header button:hover {
     width: 200px;
     display: block;
     margin: 0 auto 10px auto;
+}
+
+.creates-on {
+    position: absolute;
+    right: -140px;
+    text-align: left;
+    font-size: 12px;
+    width: 120px;
+    display: block;
+    color: #9c8e6a;
+    display: none;
 }

@@ -158,8 +158,8 @@
             );
         });
         
-        buff += '<span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button>';
-
+        buff += '<span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button><span class="creates-on">'+ moment(todo.id).fromNow() +'</span>';
+console.log(typeof todo.id);
         if (!noWrapper) {
             buff = wrapperStart + buff + wrapperEnd;
         }
@@ -229,16 +229,24 @@
                 removeTodo(+id, target);
             },
             editTodo: function(target) {
-                clickCount++;
-                if (clickCount === 1) {
-                    singleClickTimer = setTimeout(function() {
-                        clickCount = 0;
-                    }, 250);
-                } else if (clickCount === 2) {
-                    clearTimeout(singleClickTimer);
-                    clickCount = 0;
-                    doubleClickTodo(target);
+                // clickCount++;
+                // if (clickCount === 1) {
+                //     singleClickTimer = setTimeout(function() {
+                //         clickCount = 0;
+                //     }, 250);
+                // } else if (clickCount === 2) {
+                //     clearTimeout(singleClickTimer);
+                //     clickCount = 0;
+                //     doubleClickTodo(target);
+                // }
+                var id = target.getAttribute('data-id');
+                var todo = toggleTodo(id);
+                if (filterActive) {
+                    update();
+                } else {
+                    updateOne(todo);
                 }
+                print(elementList, TodoStore.get());
             },
             toggleTodo: function(target) {
                 var id = target.getAttribute('data-id');
