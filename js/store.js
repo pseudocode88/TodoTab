@@ -43,7 +43,24 @@
             if (+id > -1) {
                 return find(this.data, 'id', +id).data;
             }
-            return this.data;
+
+            var sortedData = this.data.sort(function(x, y){
+                return y.id - x.id;
+            });
+
+            var unfinshed = sortedData.filter(function(task)   {
+                return task.status === 1 ;
+            });
+
+            var finshed = sortedData.filter(function(task)   {
+                return task.status === 0;
+            });
+
+            sortedData = unfinshed.concat(finshed);
+
+            console.log(sortedData);
+
+            return sortedData;
         }
     }
 

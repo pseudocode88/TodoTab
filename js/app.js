@@ -20,10 +20,26 @@
         elementList = document.getElementById('todos');
         elementInput = document.getElementById('todo');
         filterButtons = document.querySelectorAll('.filter');
-        changeFilterClass(filterButtons[0]);
+
+        var $date = document.querySelector('.date');
+        var $time = document.querySelector('.time');
+        var $helpLink = document.getElementById('helplink');
+
+        $date.innerHTML = moment().format('MMM Do, dddd');
+        $time.innerHTML = moment().format('LT');
+        $helpLink.addEventListener('click', function(){
+            chrome.tabs.create({url: 'help.html'});
+        });
+
+        setInterval(function()  {
+            $time.innerHTML = moment().format('LT');
+        }, 60);
+
+        // changeFilterClass(filterButtons[0]);
         eventDelegation(elementBody);
         print(elementList, TodoStore.get());
         elementInput.focus();
+
     }
 
     /**
@@ -81,7 +97,8 @@
      */
     function removeTodo(id, target) {
         TodoStore.delete(id);
-        target.parentNode.parentNode.removeChild(target.parentNode);
+        print(elementList, TodoStore.get());
+        // target.parentNode.parentNode.removeChild(target.parentNode);
     }
 
     /**
@@ -99,7 +116,7 @@
                 template += renderOne(todo);
             }
         } else {
-            template += '<li class="empty">Hey, you have no items to be listed.</li>';
+            template += '<li class="empty"><img class="buddha" src="images/buddha.png"/>“No task remaining.<br/> Take a deep breath and enjoy the peace!”</li>';
         }
         return template;
     }
@@ -109,7 +126,38 @@
         var wrapperEnd = '</li>';
         var buff = '';
 
-        buff += '<span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + todo.description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button>';
+        var description = todo.description;
+
+        var tags = [
+            'mail',
+            'reply',
+            'send',
+            'post',
+            'call',
+            'meeting',
+            'discuss',
+            'brainstorm',
+            'buy',
+            'get',
+            'book',
+            'order',
+            'work',
+            'personal',
+            'write',
+            'draft'
+        ];
+
+        var tagsFound = null;
+
+        tags.forEach(function(tag) {
+
+            description = description.replace(
+                new RegExp('\\b' + tag + '\\b', 'gi'), 
+                '<span class="tag tag--'+tag+'">'+tag+'</span>'
+            );
+        });
+        
+        buff += '<span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button>';
 
         if (!noWrapper) {
             buff = wrapperStart + buff + wrapperEnd;
@@ -199,6 +247,7 @@
                 } else {
                     updateOne(todo);
                 }
+                print(elementList, TodoStore.get());
             },
             'filterCompleted': function(target) {
                 var id = target.getAttribute('data-id');
@@ -264,3 +313,8 @@
         init();
     }
 })(window, document);
+
+function help() {
+    alert('clicked');
+    // chrome.tabs.create({url: 'popup.html'})
+}

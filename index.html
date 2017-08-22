@@ -6,21 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/styles.css" media="screen" title="no title">
-    <title>Todo List</title>
+    <title>New Tab</title>
 </head>
 
 <body>
     <section class="app">
-        <input type="text" data-type="addTodo" placeholder="What do you need to do?" id="todo" name="todo" value="">
-        <header>
-          <button type="button" class="filter" name="button" data-type="filterAll">All</button>
-          <button type="button" class="filter" name="button" data-type="filterCompleted">Completed</button>
-          <button type="button" class="filter" name="button" data-type="filterActive">Active</button>
-        </header>
+        <div class="info">
+            <span class="date">&nbsp;</span>
+            <span class="time">&nbsp;</span>
+        </div>
+        <input type="text" data-type="addTodo" placeholder="Add your tasks for the day.." id="todo" name="todo" value="">
         <ul id="todos"></ul>
     </section>
+    <img class="bird__1" src="images/birds.png"/>
+    <img class="bird__2" src="images/birds.png"/>
+    <img class="bird__3" src="images/birds.png"/>
+    <img class="cloud__1" src="images/cloud-1.png"/>
+    <img class="cloud__2" src="images/cloud-1.png"/>
+    <p class="message">
+        <a id="helplink" href="#">Looking for help?</a>
+    </p>
+    <script src="js/moment.min.js" charset="utf-8"></script>
     <script src="js/store.js" charset="utf-8"></script>
     <script src="js/app.js" charset="utf-8"></script>
 </body>
 
 </html>
+
+<!-- <header>
+          <button type="button" class="filter" name="button" data-type="filterAll">All</button>
+          <button type="button" class="filter" name="button" data-type="filterCompleted">Completed</button>
+          <button type="button" class="filter" name="button" data-type="filterActive">Active</button>
+        </header> -->
