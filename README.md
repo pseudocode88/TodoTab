@@ -20,3 +20,21 @@ This tool parses your task and looks for activities like *call, meeting, reply, 
 - personal
 - write
 - draft
+
+
+## Beta Release
+
+- [x] Add, check and delete task
+- [x] Generic color coding
+
+## V1 Release
+
+- [ ] Group task list based on verb
+- [ ] Custom color codes
+- [ ] URL shortening
+
+## V2 Release
+
+- [ ] Rearrange task list
+- [ ] Sync task list across multiple device
+- [ ] Mobile App
