@@ -32,6 +32,7 @@ This tool parses your task and looks for activities like *call, meeting, reply, 
 - [ ] Group task list based on verb
 - [ ] Custom color codes
 - [ ] URL shortening
+- [ ] Title notification - (5) Todo Tab
 
 ## V2 Release
 

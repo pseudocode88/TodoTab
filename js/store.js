@@ -21,9 +21,17 @@
                 this._save();
             }
         },
+
+        addMultiple: function(data) {
+            if(data) {
+                this.data = this.data.concat(data);
+                this._save();
+            }
+        },
+
         delete: function(id) {
             if (+id > -1) {
-                var index = find(this.data, 'id', +id).index;
+                var index = find(this.data, 'id', id).index;
                 if (index > -1) {
                     this.data.splice(index, 1);
                     this._save();
@@ -32,35 +40,28 @@
         },
         edit: function(id, data) {
             if (+id > -1 && data) {
-                var index = find(this.data, 'id', +id).index;
+                var index = find(this.data, 'id', id).index;
                 if (index > -1) {
                     this.data[index] = data;
                     this._save();
                 }
             }
         },
+        
+        update: function(id, prop, value) {
+            var index = find(this.data, 'id', id).index;
+            if (index > -1) {
+                this.data[index][prop] = value;
+                this._save();
+            }
+        },
+
         get: function(id) {
             if (+id > -1) {
                 return find(this.data, 'id', +id).data;
             }
 
-            var sortedData = this.data.sort(function(x, y){
-                return y.id - x.id;
-            });
-
-            var unfinshed = sortedData.filter(function(task)   {
-                return task.status === 1 ;
-            });
-
-            var finshed = sortedData.filter(function(task)   {
-                return task.status === 0;
-            });
-
-            sortedData = unfinshed.concat(finshed);
-
-            console.log(sortedData);
-
-            return sortedData;
+            return this.data;
         }
     }
 
