@@ -25,6 +25,9 @@ var Layout = React.createClass({
 			case 'customize':
 				content.push(React.createElement(Layout.Customize, null));
 				break;
+			case 'help':
+				content.push(React.createElement(Layout.Help, null));
+				break;
 		}
 
 		content.push(React.createElement(Footer, {
@@ -66,12 +69,13 @@ Layout.Home = React.createClass({
 			var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
 
 			if (task.match(regex)) {
-				matches.push(activity);
+				matches.push(activity.id);
 			}
 		});
 
 		var todo = {
-			id: Date.now(),
+			id: uuid(),
+			createdOn: Date.now(),
 			task: task,
 			tags: matches,
 			done: false
@@ -88,7 +92,7 @@ Layout.Home = React.createClass({
 
 	sortTodo: function () {
 		var sorted = this.state.tasks.sort(function (x, y) {
-			return y.id - x.id;
+			return y.createdOn - x.createdOn;
 		});
 
 		var unfinshed = sorted.filter(function (task) {
@@ -113,6 +117,7 @@ Layout.Home = React.createClass({
 				onEnter: this.addTask.bind(this) }),
 			React.createElement(Todolist, {
 				items: this.sortTodo(),
+				activities: this.state.activities,
 				onTaskCheck: this.finishTask,
 				onTaskDelete: this.deleteTask })
 		);
@@ -131,12 +136,46 @@ Layout.Customize = React.createClass({
 		this.setState({ activities: ActivityStore.get() });
 	},
 
-	addActivity: function () {},
+	addActivity: function (name) {
+		var activity = {
+			id: uuid(),
+			name: name,
+			color: 'default'
+		};
+
+		ActivityStore.add(activity);
+		this.setState({ activities: ActivityStore.get() });
+
+		var tasks = TodoStore.get(),
+		    regex = '';
+
+		tasks.forEach(function (task) {
+
+			regex = new RegExp('\\b' + name + '\\b', 'gi');
+
+			if (task.task.match(regex)) {
+				task.tags.push(activity.id);
+				TodoStore.update(task.id, 'tags', task.tags);
+			}
+		});
+	},
 
 	deleteActivity: function (id) {
-		console.log(id);
 		ActivityStore.delete(id);
 		this.setState({ activities: ActivityStore.get() });
+
+		var tasks = TodoStore.get(),
+		    found = -1,
+		    tags = [];
+
+		tasks.forEach(function (task) {
+			tags = task.tags;
+			found = tags.indexOf(id);
+			if (found >= 0) {
+				tags.splice(found, 1);
+				TodoStore.update(task.id, 'tags', tags);
+			}
+		});
 	},
 
 	updateActivityColor: function (id, color) {
@@ -151,7 +190,6 @@ Layout.Customize = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'CustomizeHeder' },
-				React.createElement('img', { src: 'images/icon128.png', className: 'Logo' }),
 				React.createElement(
 					'h1',
 					null,
@@ -160,7 +198,7 @@ Layout.Customize = React.createClass({
 				React.createElement(
 					'p',
 					null,
-					'Expand your activity list by adding and managing new tags. Feel free to delete the genreic list and add your\'s'
+					'Expand your activity list by adding and managing new tags.'
 				)
 			),
 			React.createElement(TextBox, {
@@ -169,6 +207,204 @@ Layout.Customize = React.createClass({
 			React.createElement(Activitylist, { items: this.state.activities,
 				onColorChange: this.updateActivityColor,
 				onDeleteActivity: this.deleteActivity })
+		);
+	}
+});
+
+Layout.Help = React.createClass({
+	render: function () {
+		return React.createElement(
+			'div',
+			null,
+			React.createElement(
+				'div',
+				{ className: 'Help__Section' },
+				React.createElement('img', { src: 'images/icon128.png', className: 'Logo' }),
+				React.createElement(
+					'h1',
+					null,
+					'Todo Tab'
+				),
+				React.createElement(
+					'p',
+					null,
+					'A simple to-do list for those who spend most of the day in front of the browser. No login, no big background image, just a simple Todo list. - version 1.0.0'
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'Break' },
+				'* \u2003 * \u2003 *'
+			),
+			React.createElement(
+				'div',
+				{ className: 'Features' },
+				React.createElement(
+					'blockquote',
+					null,
+					'\u201CIdentify your tasks faster',
+					React.createElement('br', null),
+					'through activity based color coding\u201D'
+				),
+				React.createElement(
+					'div',
+					{ className: 'ColorCodes' },
+					React.createElement('img', { className: 'ColorCodesImage', src: 'images/color-1.png' }),
+					React.createElement('img', { className: 'ColorCodesImage', src: 'images/color-4.png' }),
+					React.createElement('img', { className: 'ColorCodesImage', src: 'images/color-3.png' }),
+					React.createElement('img', { className: 'ColorCodesImage', src: 'images/color-2.png' })
+				),
+				React.createElement(
+					'p',
+					null,
+					'This tool parses your task and looks for activities like ',
+					React.createElement(
+						'i',
+						null,
+						'call, meeting, reply, etc.'
+					),
+					' and show it in different colours. This colour scheme will help you to traverse the list faster. Currently, the tool parses a standard set of activities which are listed below.'
+				),
+				React.createElement(
+					'div',
+					{ className: 'ColorCodes' },
+					React.createElement(
+						'span',
+						{ className: 'tag tag--send' },
+						'send'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--mail' },
+						'mail'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--reply' },
+						'reply'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--post' },
+						'post'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--call' },
+						'call'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--meeting' },
+						'meeting'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--discuss' },
+						'discuss'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--brainstorm' },
+						'brainstorm'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--buy' },
+						'buy'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--get' },
+						'get'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--book' },
+						'book'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--order' },
+						'order'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--work' },
+						'work'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--personal' },
+						'personal'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--write' },
+						'write'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--draft' },
+						'draft'
+					),
+					React.createElement(
+						'span',
+						{ className: 'tag tag--publish' },
+						'publish'
+					)
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'Break' },
+				'* \u2003 * \u2003 *'
+			),
+			React.createElement(
+				'div',
+				{ className: 'Features' },
+				React.createElement(
+					'blockquote',
+					null,
+					'\u201CTips to make a better to-do\u201D'
+				),
+				React.createElement(
+					'p',
+					null,
+					'To-do list helps you to offload tasks from your memory, but at the same time as the list grows it will make us gloomy. So we need to be smart building the task list.'
+				),
+				React.createElement(
+					'p',
+					null,
+					'First of all, make the to-do smaller. Because we only have limited time in a day to do it. If you have a big task on your plate, try to split it into small tasks. But when you are writing it, write it completely. Don\'t try to shorten it. e.g., instead of writing "call Peter",  write "call Peter to finalise weekend plan". By the end of the day reevaluate your to-do list, remove the low priority tasks and add new tasks for the next day. And sleep peacefully!'
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'Break' },
+				'* \u2003 * \u2003 *'
+			),
+			React.createElement(
+				'div',
+				{ className: 'Features' },
+				React.createElement(
+					'blockquote',
+					null,
+					'\u201CMade with love\u201D'
+				),
+				React.createElement(
+					'p',
+					null,
+					'This tool is designed and developed by a triad called ',
+					React.createElement(
+						'a',
+						{ href: 'http://27ae60.com' },
+						'27AE60'
+					),
+					' based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!'
+				),
+				React.createElement('img', { className: 'team-logo', src: 'images/27ae60-logo.png' })
+			)
 		);
 	}
 });
@@ -248,13 +484,15 @@ var TextBox = React.createClass({
 var Todolist = React.createClass({
 	propTypes: {
 		items: React.PropTypes.array,
+		activities: React.PropTypes.array,
 		onTaskCheck: React.PropTypes.func,
 		onTaskDelete: React.PropTypes.func
 	},
 
 	getDefaultProps: function () {
 		return {
-			items: []
+			items: [],
+			activities: []
 		};
 	},
 
@@ -262,12 +500,21 @@ var Todolist = React.createClass({
 		if (this.props.items.length <= 0) {
 			return React.createElement(Todolist.Empty, null);
 		} else {
+			var tags = [];
+
 			return this.props.items.map(function (item) {
+				tags = item.tags.map(function (tag) {
+					return this.props.activities.find(function (activity) {
+						return activity.id === tag;
+					});
+				}, this);
+
 				return React.createElement(Todolist.Item, {
 					id: item.id,
+					createdOn: item.createdOn,
 					task: item.task,
 					done: item.done,
-					tags: item.tags,
+					tags: tags,
 					onCheck: this.props.onTaskCheck,
 					onDelete: this.props.onTaskDelete });
 			}, this);
@@ -286,6 +533,7 @@ var Todolist = React.createClass({
 Todolist.Item = React.createClass({
 	propTypes: {
 		id: React.PropTypes.string,
+		createdOn: React.PropTypes.string,
 		task: React.PropTypes.string,
 		done: React.PropTypes.bool,
 		tags: React.PropTypes.array,
@@ -336,7 +584,7 @@ Todolist.Item = React.createClass({
 			React.createElement(
 				'span',
 				{ className: 'Todo__CreatedOn' },
-				moment(this.props.id, 'x').fromNow()
+				moment(this.props.createdOn, 'x').fromNow()
 			)
 		);
 	}
@@ -547,7 +795,6 @@ function uuid() {
 
 function preload() {
 	if (ActivityStore.get().length <= 0 && localStorage.getItem('TodoTab-Status') === null) {
-
 		Activities.forEach(function (Activity) {
 			Activity.id = uuid();
 			ActivityStore.add(Activity);
@@ -556,8 +803,7 @@ function preload() {
 	}
 }
 
-preload();
-
 window.onload = function () {
+	preload();
 	ReactDOM.render(React.createElement(Layout, null), document.getElementById('app'));
 };
