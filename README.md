@@ -1,40 +1,13 @@
 # Todo Tab
-A simple todo list for those who spend most of the day in front of the browser. No login, no big background image, just a simple Todo list. - version 0.1.0
+A simple todo list for those who spend most of the day in front of the browser. No login, no big background image, just a simple Todo list. - **version 1.0.0**
+
+[Chrome store link](https://chrome.google.com/webstore/detail/todo-tab/ljkjodkdilmmlaiphehiceeblnnndhnd)
 
 ## “Identify your tasks faster through activity based color coding”
-This tool parses your task and looks for activities like *call, meeting, reply, etc.*  and show it in different colours. This colour scheme will help you to traverse the list faster. Currently, the tool parses a standard set of activities which are listed below.
+> This tool parses your task and looks for activities like *call, meeting, reply, etc.* and show it in different colours. This colour scheme will help you to traverse the list faster.
 
-- send
-- mail
-- reply
-- post
-- call
-- meeting
-- discuss
-- brainstorm
-- buy
-- get
-- book
-- order
-- work
-- personal
-- write
-- draft
+## Setting up Development
 
-
-## Beta Release
-
-- [x] Add, check and delete task
-- [x] Generic color coding
-
-## V1 Release
-
-- [ ] Custom color codes
-- [ ] URL shortening
-- [ ] Title notification - (5) Todo Tab
-
-## V2 Release
-
-- [ ] Rearrange task list
-- [ ] Sync task list across multiple device
-- [ ] Mobile App
+1. `$ git clone git@bitbucket.org:27ae60/todo-tab.git`
+2. `$ npm install`
+3. `$ npm run watch`
