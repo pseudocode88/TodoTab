@@ -1,16 +1,48 @@
 'use strict';
 
-var TodoStore = new Store('TodoTab');
-var ActivityStore = new Store('Activity');
-
-if(ActivityStore.get().length <= 0)	{
-		ActivityStore.addMultiple(Activities);
-}
+var TodoStore = new Store('TodoTab-Tasks');
+var ActivityStore = new Store('TodoTab-Activities');
 
 var Layout = React.createClass({
-		render: function()  {
-				return <Layout.Home/>
+
+	layouts: [
+		{ name: 'Back to Todo', link: 'home'},
+		{ name: 'Customize Activities', link: 'customize'},
+		{ name: 'Help', link: 'help'}
+	],
+
+	getInitialState: function()	{
+		return { layout: 'home' }
+	},
+
+	goto: function(link)	{
+		this.setState({ layout: link });
+	},
+
+	render: function()  {
+		var content = [];
+		
+		switch(this.state.layout)	{
+			case 'home':
+				content.push(
+					<Layout.Home />
+				);
+				break;
+			case 'customize':
+				content.push(
+					<Layout.Customize />
+				);
+				break;
 		}
+		
+		content.push(
+			<Footer 
+				layout={this.state.layout} 
+				layouts={this.layouts} 
+				goto={this.goto.bind(this)}/>
+		);
+		return <div>{content}</div>;
+	}
 });
 
 Layout.Home = React.createClass({
@@ -82,19 +114,63 @@ Layout.Home = React.createClass({
 						<div>
 								<DateTime/>
 								
-								<AddTaskTextBox 
-										onEnter={this.addTask.bind(this)}/>
+								<TextBox 
+									placeholder="Add your tasks for the day…"
+									onEnter={this.addTask.bind(this)}/>
 
 								<Todolist 
-										items={this.sortTodo()} 
-										onTaskCheck={this.finishTask}
-										onTaskDelete={this.deleteTask}/>
-								
-								<Footer/>
+									items={this.sortTodo()} 
+									onTaskCheck={this.finishTask}
+									onTaskDelete={this.deleteTask}/>
 						</div>
 				);
 		}
 });
+
+Layout.Customize = React.createClass({
+
+	getInitialState: function()	{
+		return {
+				activities: []
+		}
+	},
+
+	componentDidMount: function()	{
+			this.setState({ activities: ActivityStore.get() });
+	},
+
+	addActivity: function() {},
+
+	deleteActivity: function(id)	{
+		console.log(id);
+		ActivityStore.delete(id);
+		this.setState({ activities: ActivityStore.get() });
+	},
+
+	updateActivityColor: function(id, color)	{
+		ActivityStore.update(id, 'color', color);
+		this.setState({ activities: ActivityStore.get() });
+	},
+
+	render: function()	{
+		return (
+			<div>
+				<div className="CustomizeHeder">
+					<img src="images/icon128.png" className="Logo"/>
+					<h1>Customize Activities</h1>
+					<p>Expand your activity list by adding and managing new tags. Feel free to delete the genreic list and add your's</p>
+				</div>
+				<TextBox 
+					placeholder="Add a custom activity. eg. project, project/todo"
+					onEnter={this.addActivity.bind(this)}/>
+				
+				<Activitylist items={this.state.activities}
+					onColorChange={this.updateActivityColor}
+					onDeleteActivity={this.deleteActivity} />
+			</div>
+		);
+	}
+})
 
 var DateTime = React.createClass({
 		getInitialState: function() {
@@ -120,44 +196,45 @@ var DateTime = React.createClass({
 		}
 });
 
-var AddTaskTextBox = React.createClass({
+var TextBox = React.createClass({
 		propTypes: {
-				onEnter: React.PropTypes.func,
-				value: React.PropTypes.string
+			onEnter: React.PropTypes.func,
+			value: React.PropTypes.string,
+			placeholder: React.PropTypes.string
 		},
 
 		getInitialState: function()	{
-				return { value: this.props.value }
+			return { value: this.props.value }
 		},
 
 		getDefaultProps: function()	{
-				return {
-						value: '',
-						onEnter: function() {}
-				}
+			return {
+					value: '',
+					onEnter: function() {}
+			}
 		},
 
 		handleKeyPress: function(e)	{
-				if(e.which === 13)	{
-						this.props.onEnter(e.target.value);
-						this.setState({ value: '' });
-				}
+			if(e.which === 13)	{
+					this.props.onEnter(e.target.value);
+					this.setState({ value: '' });
+			}
 		},
 
 		handleChange: function(e)	{
-				this.setState({ value: e.target.value });
+			this.setState({ value: e.target.value });
 		},
 
 		render: function()	{
-				return (
-						<input type="text" 
-								className="TextBox"
-								placeholder="Add your tasks for the day…" 
-								name="add-todo" 
-								value={this.state.value} 
-								onChange={this.handleChange.bind(this)}
-								onKeyPress={this.handleKeyPress.bind(this)}/>
-				);
+			return (
+					<input type="text" 
+						autoFocus
+						className="TextBox"
+						placeholder={this.props.placeholder}
+						value={this.state.value} 
+						onChange={this.handleChange.bind(this)}
+						onKeyPress={this.handleKeyPress.bind(this)}/>
+			);
 		}
 });
 
@@ -268,24 +345,197 @@ Todolist.Empty = React.createClass({
 });
 
 var Footer = React.createClass({
+	propTypes: {
+		layout: React.PropTypes.string,
+		layouts: React.PropTypes.array,
+		goto: React.PropTypes.func,
+	},
+
+	goto: function(link)	{
+		this.props.goto(link);
+	},
+
+	links: function()	{
+		return this.props.layouts.map(function(layout)	{
+			if(layout.link !== this.props.layout)	{
+				return (
+					<li className="Links__Item" 
+						onClick={this.goto.bind(this, layout.link)}>
+						{layout.name}
+					</li>
+				);
+			}
+		}, this);
+	},
+
 	render: function()	{
 		return (
 			<footer>
-				<img className="Bird Bird--right" src="images/birds.png"/>
-				<img className="Bird Bird--middle" src="images/birds.png"/>
-				<img className="Bird Bird--left" src="images/birds.png"/>
-				<img className="Cloud Cloud--right" src="images/cloud-1.png"/>
-				<img className="Cloud Cloud--left" src="images/cloud-1.png"/>
-				<p className="Message">
-						<a id="helplink" href="#">Customize activities</a>
-						&emsp;•&emsp;
-						<a id="helplink" href="#">Help</a>
-				</p>
+				<nav className="Links">{this.links()}</nav>
+				<Footer.Images/>
 			</footer>
 		);
 	}
 });
 
+Footer.Images = React.createClass({
+	render: function()	{
+		return (
+			<div>
+				<img className="Bird Bird--right" src="images/birds.png"/>
+				<img className="Bird Bird--middle" src="images/birds.png"/>
+				<img className="Bird Bird--left" src="images/birds.png"/>
+				<img className="Cloud Cloud--right" src="images/cloud-1.png"/>
+				<img className="Cloud Cloud--left" src="images/cloud-1.png"/>
+			</div>
+		);
+	}
+});
+
+var Activitylist = React.createClass({
+	propTypes: {
+		items: React.PropTypes.array,
+		onColorChange: React.PropTypes.func,
+		onDeleteActivity: React.PropTypes.func
+	},
+
+	items: function()	{
+		return this.props.items.map(function(item)	{
+			return (
+				<Activity id={item.id}
+					name={item.name}
+					color={item.color}
+					onColorChange={this.props.onColorChange}
+					onDelete={this.props.onDeleteActivity}/>
+			);
+		}, this);
+	},
+
+	render: function()	{
+		return (
+			<ol class="Activitylist">{this.items()}</ol>
+		);
+	}
+});
+
+var Activity = React.createClass({
+	propTypes: {
+		id: React.PropTypes.string,
+		name: React.PropTypes.string,
+		color: React.PropTypes.string,
+		onColorChange: React.PropTypes.func,
+		onDelete: React.PropTypes.func
+	},
+
+	handleColorChange: function(color)	{
+		this.props.onColorChange(this.props.id, color);
+	},
+
+	handleDelete: function()	{
+		this.props.onDelete(this.props.id);
+	},
+
+	render: function()	{
+		var activityClasses = classNames({
+			'Activity__Name': true,
+		}, 'Color--' + this.props.color);
+
+		return (
+			<li className="Activity">
+				<p className={activityClasses}>{this.props.name}</p>
+				<div className="Activity__Pallete">
+					<Pallete selected={this.props.color}
+						onColorChange={this.handleColorChange.bind(this)}/>
+				</div>
+				<button type="button" 
+					onClick={this.handleDelete.bind(this)}
+					className="Activity__Delete">✖</button>
+			</li>
+		);
+	}
+});
+
+var Pallete = React.createClass({
+	propTypes: {
+		selected: React.PropTypes.string,
+		onColorChange: React.PropTypes.func
+	},
+
+	getInitialState: function()	{
+		return {
+			colors: Colors
+		}
+	},
+
+	swatches: function()	{
+		return this.state.colors.map(function(color)	{
+			return (
+				<Pallete.Swatch color={color} 
+					selected={(this.props.selected === color) ? true : false}
+					onColorChange={this.props.onColorChange}/>
+			);
+		}, this);
+	},
+
+	render: function()	{
+		return (
+			<ul className="Pallete">{this.swatches()}</ul>
+		);
+	}
+});
+
+Pallete.Swatch = React.createClass({
+	propTypes: {
+		color: React.PropTypes.string,
+		selected: React.PropTypes.bool,
+		onColorChange: React.PropTypes.func
+	},
+
+	getDefaultProps: function()	{
+		return {
+			color: '',
+			selected: false
+		}
+	},
+
+	handleClick: function()	{
+		this.props.onColorChange(this.props.color);
+	},
+
+	render: function()	{
+		var swatchClasses = classNames({
+			'Pallete__Swatch': true,
+			'Pallete__SelectedSwatch': this.props.selected
+		}, 'Color--' + this.props.color + '-bg');
+
+		return (
+			<li className={swatchClasses} onClick={this.handleClick.bind(this)}></li>
+		)
+	}
+});
+
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function preload()	{
+	if(ActivityStore.get().length <= 0 
+		&& localStorage.getItem('TodoTab-Status') === null)	{
+
+		Activities.forEach(function(Activity)	{
+			Activity.id = uuid();
+			ActivityStore.add(Activity);
+			localStorage.setItem('TodoTab-Status', 'installed');
+		});
+		
+	}
+}
+
+preload();
+
 window.onload = function() {
-		ReactDOM.render(<Layout/>, document.getElementById('app'));
+	ReactDOM.render(<Layout/>, document.getElementById('app'));
 };

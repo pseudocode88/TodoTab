@@ -55,7 +55,7 @@
         },
 
         get: function(id) {
-            if (id > -1) {
+            if(id) {
                 return find(this.data, 'id', id).data;
             }
 
@@ -64,7 +64,7 @@
     }
 
     function find(data, prop, value) {
-        var t;
+        // var t;
         for (var i = 0, l = data.length; i < l; i++) {
             if (data[i][prop] === value) {
                 return {
