@@ -405,6 +405,7 @@ button {
 
 .CustomizeHeder {
   text-align: center;
+  margin: 40px 0;
 }
 
 .CustomizeHeder h1 {
@@ -418,7 +419,7 @@ button {
   font-size: 16px;
   color: #333;
   line-height: 1.5;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 
 .Pallete {
