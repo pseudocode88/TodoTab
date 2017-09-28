@@ -54,12 +54,12 @@ var Activities = [
 ];
 
 var Colors = [
+    "default",
+    "carrot",    
+    "pumpkin",
     "pomegranate",    
-    "pumpkin",    
     "greensea",    
     "belizehole",    
     "wisteria",    
-    "carrot",    
-    "posh",    
-    "default"
+    "posh"
 ];
