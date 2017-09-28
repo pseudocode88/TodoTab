@@ -30,12 +30,10 @@
         },
 
         delete: function(id) {
-            if (+id > -1) {
-                var index = find(this.data, 'id', id).index;
-                if (index > -1) {
-                    this.data.splice(index, 1);
-                    this._save();
-                }
+            var index = find(this.data, 'id', id).index;
+            if (index > -1) {
+                this.data.splice(index, 1);
+                this._save();
             }
         },
         edit: function(id, data) {
@@ -57,8 +55,8 @@
         },
 
         get: function(id) {
-            if (+id > -1) {
-                return find(this.data, 'id', +id).data;
+            if (id > -1) {
+                return find(this.data, 'id', id).data;
             }
 
             return this.data;
