@@ -17,7 +17,7 @@
         },
         add: function(data) {
             if (data) {
-                this.data.push(data)
+                this.data.unshift(data)
                 this._save();
             }
         },
