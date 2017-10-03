@@ -137,6 +137,10 @@ Layout.Home = React.createClass({
 					return task.done === false ;
 			});
 
+			if(unfinshed.length !== 0)	{
+				document.title = '('+ unfinshed.length +') Todo Tab';
+			}
+
 			var finshed = sorted.filter(function(task)   {
 					return task.done === true;
 			});
