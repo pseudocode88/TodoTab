@@ -54,9 +54,10 @@
             }
         },
 
-        get: function(id) {
-            if(id) {
-                return find(this.data, 'id', id).data;
+        get: function(value, attr) {
+            if(value)  {
+                attr = (attr) ? attr : 'id';
+                return find(this.data, attr, value).data;
             }
 
             return this.data;
@@ -73,6 +74,11 @@
                 };
                 break;
             }
+        }
+
+        return {
+            data: [],
+            index: -1
         }
     }
 
