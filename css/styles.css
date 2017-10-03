@@ -188,6 +188,16 @@ button {
   color: #e74c3c;
 }
 
+.Todo__Link {
+  color: #333;
+  text-decoration-color: rgba(6, 70, 173, 0.6);
+}
+
+.Todo__Link:hover {
+  color: #0645AD;
+  text-decoration-color: rgba(6, 70, 173, 1);
+}
+
 @keyframes updownbirds {
   0% { transform: translateY(0); }
   50% { transform: translateY(10px);}

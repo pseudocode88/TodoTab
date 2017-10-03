@@ -51,7 +51,7 @@ var Layout = React.createClass({
 
 	render: function()  {
 		var content = [];
-		
+
 		switch(this.state.layout)	{
 			case 'home':
 				content.push(
@@ -69,11 +69,11 @@ var Layout = React.createClass({
 				);
 				break;
 		}
-		
+
 		content.push(
-			<Footer 
-				layout={this.state.layout} 
-				layouts={this.layouts} 
+			<Footer
+				layout={this.state.layout}
+				layouts={this.layouts}
 				goto={this.goto.bind(this)}/>
 		);
 		return <div>{content}</div>;
@@ -89,7 +89,7 @@ Layout.Home = React.createClass({
 	},
 
 	componentDidMount: function()	{
-		this.setState({ 
+		this.setState({
 				tasks: TodoStore.get(),
 				activities: ActivityStore.get()
 		});
@@ -149,12 +149,12 @@ Layout.Home = React.createClass({
 		return (
 				<div>
 						<DateTime/>
-						
-						<TextBox 
+
+						<TextBox
 							placeholder="Add your tasks for the day…"
 							onEnter={this.addTask.bind(this)}/>
 
-						<Todolist 
+						<Todolist
 							items={this.sortTodo()}
 							activities={this.state.activities}
 							onTaskCheck={this.finishTask}
@@ -232,10 +232,10 @@ Layout.Customize = React.createClass({
 					<h1>Customize Activities</h1>
 					<p>Expand your activity list by adding and managing new tags.</p>
 				</div>
-				<TextBox 
+				<TextBox
 					placeholder="Add a custom activity. eg. project, project/todo"
 					onEnter={this.addActivity.bind(this)}/>
-				
+
 				<Activitylist items={this.state.activities}
 					onColorChange={this.updateActivityColor}
 					onDeleteActivity={this.deleteActivity} />
@@ -286,7 +286,7 @@ Layout.Help = React.createClass({
                 <span className="tag tag--draft">draft</span>
                 <span className="tag tag--publish">publish</span>
             </div>
-            
+
         </div>
         <div className="Break">* &emsp; * &emsp; *</div>
         <div className="Features">
@@ -360,11 +360,11 @@ var TextBox = React.createClass({
 
 		render: function()	{
 			return (
-					<input type="text" 
+					<input type="text"
 						autoFocus
 						className="TextBox"
 						placeholder={this.props.placeholder}
-						value={this.state.value} 
+						value={this.state.value}
 						onChange={this.handleChange.bind(this)}
 						onKeyPress={this.handleKeyPress.bind(this)}/>
 			);
@@ -400,10 +400,10 @@ var Todolist = React.createClass({
 						}, this);
 
 						return (
-							<Todolist.Item 
+							<Todolist.Item
 									id={item.id}
-									createdOn={item.createdOn} 
-									task={item.task} 
+									createdOn={item.createdOn}
+									task={item.task}
 									done={item.done}
 									tags={tags}
 									onCheck={this.props.onTaskCheck}
@@ -423,58 +423,81 @@ var Todolist = React.createClass({
 });
 
 Todolist.Item = React.createClass({
-		propTypes: {
-				id: React.PropTypes.string,
-				createdOn: React.PropTypes.string,
-				task: React.PropTypes.string,
-				done: React.PropTypes.bool,
-				tags: React.PropTypes.array,
-				onCheck: React.PropTypes.func,
-				onDelete: React.PropTypes.func
-		},
+	propTypes: {
+			id: React.PropTypes.string,
+			createdOn: React.PropTypes.string,
+			task: React.PropTypes.string,
+			done: React.PropTypes.bool,
+			tags: React.PropTypes.array,
+			onCheck: React.PropTypes.func,
+			onDelete: React.PropTypes.func
+	},
 
-		createColourCoding: function(task, tags, done)	{
-			if(!done)	{
-				tags.forEach(function(tag) {
-						task = task.replace(
-								new RegExp('\\b' + tag.name + '\\b', 'gi'), 
-								'<span class="Color Color--' + tag.color + '">'+tag.name+'</span>'
-						);
-				});
-			}
-
-			return { __html: task }
-		},
-
-		handleCheck: function()	{
-				this.props.onCheck(this.props.id, this.props.done);
-		},
-
-		handleDelete: function()	{
-				this.props.onDelete(this.props.id);
-		},
-
-		render: function()	{
-				var todoClasses = classNames({
-						'Todo': true,
-						'Todo--checked': this.props.done
-				});
-
-				return (
-						<li className={todoClasses}>
-								<span className="Todo__Check">
-										<i onClick={this.handleCheck.bind(this)}></i>
-								</span>
-								<p className="Todo__Task" 
-										onClick={this.handleCheck.bind(this)}
-										dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>	
-								<button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
-								<span className="Todo__CreatedOn">
-										{moment(this.props.createdOn, 'x').fromNow()}
-								</span>
-						</li>
-				);
+	createColourCoding: function(task, tags, done)	{
+		if(!done)	{
+			tags.forEach(function(tag) {
+					task = task.replace(
+							new RegExp('\\b' + tag.name + '\\b', 'gi'),
+							'<span class="Color Color--' + tag.color + '">'+tag.name+'</span>'
+					);
+			});
 		}
+
+		var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+		var urls = task.match(urlRegex),
+				domain = '';
+
+		if(urls)	{
+			urls.forEach(function(url)	{
+				domain = extractRootDomain(url);
+				task = task.replace(
+					url, 
+					'<a href="' + url +'" class="Todo__Link" target="_blank" onclick="function(e) { e.stopPropagation(); }">' + domain + '…</a>'
+				);
+			}, this);
+		}
+
+		return { __html: task }
+	},
+
+	handleCheck: function(e)	{
+		if(e.target.className !== 'Todo__Link')	{
+			this.props.onCheck(this.props.id, this.props.done);
+		}
+	},
+
+	handleLinkClick: function(e)	{
+		return function(e) {
+			e.stopPropagation();
+		};
+	},
+
+	handleDelete: function()	{
+			this.props.onDelete(this.props.id);
+	},
+
+	render: function()	{
+			var todoClasses = classNames({
+					'Todo': true,
+					'Todo--checked': this.props.done
+			});
+
+			return (
+					<li className={todoClasses}>
+							<span className="Todo__Check">
+									<i onClick={this.handleCheck.bind(this)}></i>
+							</span>
+							<p className="Todo__Task"
+									onClick={this.handleCheck.bind(this)}
+									dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
+							<button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
+							<span className="Todo__CreatedOn">
+									{moment(this.props.createdOn, 'x').fromNow()}
+							</span>
+					</li>
+			);
+	}
 });
 
 Todolist.Empty = React.createClass({
@@ -482,7 +505,7 @@ Todolist.Empty = React.createClass({
 		return (
 			<li className="Empty">
 				<img className="Empty__Buddha" src="images/buddha.png"/>
-				“No task remaining.<br/> 
+				“No task remaining.<br/>
 				Take a deep breath and enjoy the peace!”
 			</li>
 		);
@@ -504,7 +527,7 @@ var Footer = React.createClass({
 		return this.props.layouts.map(function(layout)	{
 			if(layout.link !== this.props.layout)	{
 				return (
-					<li className="Links__Item" 
+					<li className="Links__Item"
 						onClick={this.goto.bind(this, layout.link)}>
 						{layout.name}
 					</li>
@@ -592,7 +615,7 @@ var Activity = React.createClass({
 					<Pallete selected={this.props.color}
 						onColorChange={this.handleColorChange.bind(this)}/>
 				</div>
-				<button type="button" 
+				<button type="button"
 					onClick={this.handleDelete.bind(this)}
 					className="Activity__Delete">✖</button>
 			</li>
@@ -615,7 +638,7 @@ var Pallete = React.createClass({
 	swatches: function()	{
 		return this.state.colors.map(function(color)	{
 			return (
-				<Pallete.Swatch color={color} 
+				<Pallete.Swatch color={color}
 					selected={(this.props.selected === color) ? true : false}
 					onColorChange={this.props.onColorChange}/>
 			);
@@ -667,14 +690,14 @@ function uuid() {
 }
 
 function preload()	{
-	if(ActivityStore.get().length <= 0 
+	if(ActivityStore.get().length <= 0
 		&& localStorage.getItem('TodoTab-Status') === null)	{
 		Activities.forEach(function(Activity)	{
 			Activity.id = uuid();
 			ActivityStore.add(Activity);
 			localStorage.setItem('TodoTab-Status', 'installed');
 		});
-		
+
 	}
 }
 
@@ -682,3 +705,5 @@ window.onload = function() {
 	preload();
 	ReactDOM.render(<Layout/>, document.getElementById('app'));
 };
+
+document.title = 'Todo Tab';
