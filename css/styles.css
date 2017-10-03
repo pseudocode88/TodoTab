@@ -142,6 +142,11 @@ button {
   display: none;
 }
 
+.Todo__Link {
+  color: #333;
+  text-decoration-color: rgba(6, 70, 173, 0.6);
+}
+
 .Todo__CreatedOn {
   position: absolute;
   right: -140px;
@@ -160,6 +165,11 @@ button {
 
 .Todo--checked .Todo__Task {
 	text-decoration: line-through;
+  color: #ccc !important;
+}
+
+.Todo--checked .Todo__Link {
+  text-decoration-color: #ccc !important;
   color: #ccc !important;
 }
 
@@ -186,11 +196,6 @@ button {
 
 .Todo__Delete:hover {
   color: #e74c3c;
-}
-
-.Todo__Link {
-  color: #333;
-  text-decoration-color: rgba(6, 70, 173, 0.6);
 }
 
 .Todo__Link:hover {
