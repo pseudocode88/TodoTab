@@ -3,6 +3,35 @@
 var TodoStore = new Store('TodoTab-Tasks');
 var ActivityStore = new Store('TodoTab-Activities');
 
+function extractHostname(url) {
+	var hostname;
+
+	if (url.indexOf("://") > -1) {
+		hostname = url.split('/')[2];
+	} else {
+		hostname = url.split('/')[0];
+	}
+
+	hostname = hostname.split(':')[0];
+	hostname = hostname.split('?')[0];
+
+	return hostname;
+}
+
+function extractRootDomain(url) {
+	var domain = extractHostname(url),
+	    splitArr = domain.split('.'),
+	    arrLen = splitArr.length;
+
+	if (arrLen > 2) {
+		domain = splitArr[arrLen - 2] + '.' + splitArr[arrLen - 1];
+		if (splitArr[arrLen - 1].length == 2 && splitArr[arrLen - 1].length == 2) {
+			domain = splitArr[arrLen - 3] + '.' + domain;
+		}
+	}
+	return domain;
+}
+
 var Layout = React.createClass({
 
 	layouts: [{ name: 'Back to Todo', link: 'home' }, { name: 'Customize Activities', link: 'customize' }, { name: 'Help', link: 'help' }],
@@ -548,11 +577,31 @@ Todolist.Item = React.createClass({
 			});
 		}
 
+		var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+		var urls = task.match(urlRegex),
+		    domain = '';
+
+		if (urls) {
+			urls.forEach(function (url) {
+				domain = extractRootDomain(url);
+				task = task.replace(url, '<a href="' + url + '" class="Todo__Link" target="_blank" onclick="function(e) { e.stopPropagation(); }">' + domain + '…</a>');
+			}, this);
+		}
+
 		return { __html: task };
 	},
 
-	handleCheck: function () {
-		this.props.onCheck(this.props.id, this.props.done);
+	handleCheck: function (e) {
+		if (e.target.className !== 'Todo__Link') {
+			this.props.onCheck(this.props.id, this.props.done);
+		}
+	},
+
+	handleLinkClick: function (e) {
+		return function (e) {
+			e.stopPropagation();
+		};
 	},
 
 	handleDelete: function () {
@@ -807,3 +856,5 @@ window.onload = function () {
 	preload();
 	ReactDOM.render(React.createElement(Layout, null), document.getElementById('app'));
 };
+
+document.title = 'Todo Tab';
