@@ -143,7 +143,10 @@ Layout.Home = React.createClass({
 
 			this.setTitleNotification(unfinished.length);
 
-			return unfinished.concat(finished);
+			return {
+				unfinished: unfinished,
+				finished: finished
+			};
 	},
 
 	setTitleNotification: function(taskCount){
@@ -382,53 +385,122 @@ var TextBox = React.createClass({
 
 var Todolist = React.createClass({
 		propTypes: {
-				items: React.PropTypes.array,
+				items: React.PropTypes.object,
 				activities: React.PropTypes.array,
 				onTaskCheck: React.PropTypes.func,
 				onTaskDelete: React.PropTypes.func
 		},
 
+		componentWillReceiveProps: function(nextProps)	{
+			if(nextProps.items.finished.length >= 4)	{
+				this.setState({hideCompleted: true});
+			}
+		},
+
+		getInitialState: function()	{
+			return {
+				hideCompleted: true
+			}
+		},
+
 		getDefaultProps: function()	{
 				return {
-						items: [],
+						items: {},
 						activities: []
 				}
 		},
 
+		getActivityObjects: function(tags)	{
+			return tags.map(function(tag)	{
+				return this.props.activities.find(function(activity)	{
+					return activity.id === tag
+				});
+			}, this);
+		},
+
+		onToggleList: function()	{
+			this.setState({ hideCompleted: !this.state.hideCompleted });
+		},
+
+		unfinishedTasks: function()	{
+			var tags = [];
+			return this.props.items.unfinished.map(function(item) {
+				return (
+					<Todolist.Item
+						id={item.id}
+						createdOn={item.createdOn}
+						task={item.task}
+						done={item.done}
+						tags={this.getActivityObjects(item.tags)}
+						onCheck={this.props.onTaskCheck}
+						onDelete={this.props.onTaskDelete}/>
+				);
+			}, this);
+		},
+
+		finishedTask: function()	{
+			return this.props.items.finished.map(function(item, index) {
+				if(index >= 3 && this.state.hideCompleted)	{
+					return null;
+				}
+
+				return (
+					<Todolist.Item
+						id={item.id}
+						createdOn={item.createdOn}
+						task={item.task}
+						done={item.done}
+						tags={[]}
+						onCheck={this.props.onTaskCheck}
+						onDelete={this.props.onTaskDelete}/>
+				);
+			}, this);
+		},
+
 		todolistItems: function()	{
-				if(this.props.items.length <= 0)	{
+				if(this.props.items.finished.length <= 0 &&
+						this.props.items.unfinished.length <= 0)	{
 					return <Todolist.Empty/>
 				} else {
-					var tags = [];
-
-					return this.props.items.map(function(item) {
-						tags = item.tags.map(function(tag)	{
-							return this.props.activities.find(function(activity)	{
-								return activity.id === tag
-							})
-						}, this);
-
-						return (
-							<Todolist.Item
-									id={item.id}
-									createdOn={item.createdOn}
-									task={item.task}
-									done={item.done}
-									tags={tags}
-									onCheck={this.props.onTaskCheck}
-									onDelete={this.props.onTaskDelete}/>
-						);
-					}, this);
+					return this.unfinishedTasks().concat(this.finishedTask());
 				}
+		},
+
+		todoToggleList: function()	{
+			if(this.props.items.finished.length > 3)	{
+				return (
+					<Todolist.ToggleList 
+						toggleMode={this.state.hideCompleted}
+						onClick={this.onToggleList.bind(this)}/>
+				);
+			}else {
+				return null
+			}
 		},
 
 		render: function()	{
 				return (
 					<ul className="Todolist" id="todos">
 						{this.todolistItems()}
+						{this.todoToggleList()}
 					</ul>
 				);
 		}
+});
+
+Todolist.ToggleList = React.createClass({
+	propTypes: {
+		toggleMode: React.PropTypes.bool,
+		onClick: React.PropTypes.func
+	},
+
+	render: function()	{
+		return (
+			<li className="Todo Todo--toggle" onClick={this.props.onClick}>
+				{(this.props.toggleMode) ? 'show more' : 'show less'}
+			</li>
+		);
+	}
 });
 
 Todolist.Item = React.createClass({
@@ -451,7 +523,7 @@ Todolist.Item = React.createClass({
 					);
 			});
 		}
-
+		
 		var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
 		var urls = task.match(urlRegex),
@@ -466,7 +538,7 @@ Todolist.Item = React.createClass({
 				);
 			}, this);
 		}
-
+		
 		return { __html: task }
 	},
 
