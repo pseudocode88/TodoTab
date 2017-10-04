@@ -133,23 +133,28 @@ Layout.Home = React.createClass({
 					return y.createdOn - x.createdOn;
 			});
 
-			var unfinshed = sorted.filter(function(task)   {
+			var unfinished = sorted.filter(function(task)   {
 					return task.done === false ;
 			});
 
-			if(unfinshed.length !== 0)	{
-				document.title = '('+ unfinshed.length +') Todo Tab';
-			}
-
-			var finshed = sorted.filter(function(task)   {
+			var finished = sorted.filter(function(task)   {
 					return task.done === true;
 			});
 
-			return unfinshed.concat(finshed);
+			this.setTitleNotification(unfinished.length);
+
+			return unfinished.concat(finished);
+	},
+
+	setTitleNotification: function(taskCount){
+		if(taskCount === 0)	{
+			document.title = 'Todo Tab';
+		}else {
+			document.title = '(' + taskCount + ') Todo Tab';
+		}
 	},
 
 	render: function()  {
-
 		return (
 				<div>
 						<DateTime/>
