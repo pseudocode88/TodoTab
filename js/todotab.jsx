@@ -392,7 +392,7 @@ var Todolist = React.createClass({
 		},
 
 		componentWillReceiveProps: function(nextProps)	{
-			if(nextProps.items.finished.length >= 4)	{
+			if(nextProps.items.finished.length >= 3)	{
 				this.setState({hideCompleted: true});
 			}
 		},
@@ -440,7 +440,7 @@ var Todolist = React.createClass({
 
 		finishedTask: function()	{
 			return this.props.items.finished.map(function(item, index) {
-				if(index >= 3 && this.state.hideCompleted)	{
+				if(index >= 2 && this.state.hideCompleted)	{
 					return null;
 				}
 
@@ -467,7 +467,7 @@ var Todolist = React.createClass({
 		},
 
 		todoToggleList: function()	{
-			if(this.props.items.finished.length > 3)	{
+			if(this.props.items.finished.length > 2)	{
 				return (
 					<Todolist.ToggleList 
 						toggleMode={this.state.hideCompleted}
