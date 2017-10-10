@@ -49,10 +49,12 @@
             }
         },
         
-        update: function(id, prop, value) {
+        update: function(id, changes) {
             var index = find(this.data, 'id', id).index;
             if (index > -1) {
-                this.data[index][prop] = value;
+                for(var attr in changes)    {
+                    this.data[index][attr] = changes[attr];
+                }
                 this._save();
             }
         },
@@ -62,7 +64,6 @@
                 attr = (attr) ? attr : 'id';
                 return find(this.data, attr, value).data;
             }
-
             return this.data;
         }
     }
