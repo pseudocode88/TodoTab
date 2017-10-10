@@ -117,7 +117,11 @@ Layout.Home = React.createClass({
 	},
 
 	finishTask: function(id, done)	{
-		TodoStore.update(id, 'done', !done);
+		TodoStore.update(id, {
+			done: !done,
+			checkedOn: (done) ? null : Date.now()
+		});
+
 		this.setState({ tasks: TodoStore.get() });
 	},
 
@@ -135,13 +139,14 @@ Layout.Home = React.createClass({
 		var todo = {
 				id: uuid(),
 				createdOn: Date.now(),
+				checkedOn: null,
 				task: task,
 				tags: matches,
 				done: false
 		};
 
 		TodoStore.add(todo);
-		this.setState({ task: TodoStore.get() });
+		this.setState({ tasks: TodoStore.get() });
 	},
 
 	deleteTask: function(id)	{
@@ -150,16 +155,12 @@ Layout.Home = React.createClass({
 	},
 
 	sortTodo: function()	{
-			var sorted = this.state.tasks.sort(function(x, y){
-					return y.createdOn - x.createdOn;
+			var unfinished = this.state.tasks.filter(function(task)   {
+				return task.done === false ;
 			});
 
-			var unfinished = sorted.filter(function(task)   {
-					return task.done === false ;
-			});
-
-			var finished = sorted.filter(function(task)   {
-					return task.done === true;
+			var finished = this.state.tasks.filter(function(task)   {
+				return task.done === true;
 			});
 
 			this.setTitleNotification(unfinished.length);
@@ -180,19 +181,19 @@ Layout.Home = React.createClass({
 
 	render: function()  {
 		return (
-				<div>
-						<DateTime/>
+			<div>
+				<DateTime/>
 
-						<TextBox
-							placeholder="Add your tasks for the day…"
-							onEnter={this.addTask.bind(this)}/>
+				<TextBox
+					placeholder="Add your tasks for the day…"
+					onEnter={this.addTask.bind(this)}/>
 
-						<Todolist
-							items={this.sortTodo()}
-							activities={this.state.activities}
-							onTaskCheck={this.finishTask}
-							onTaskDelete={this.deleteTask}/>
-				</div>
+				<Todolist
+					items={this.sortTodo()}
+					activities={this.state.activities}
+					onTaskCheck={this.finishTask}
+					onTaskDelete={this.deleteTask}/>
+			</div>
 		);
 	}
 });
@@ -228,7 +229,7 @@ Layout.Customize = React.createClass({
 
 			if(task.task.match(regex)) {
 				task.tags.push(activity.id);
-				TodoStore.update(task.id, 'tags', task.tags);
+				TodoStore.update(task.id, { tags: task.tags });
 			}
 	});
 
@@ -247,13 +248,13 @@ Layout.Customize = React.createClass({
 			found = tags.indexOf(id);
 			if(found >= 0)	{
 				tags.splice(found, 1);
-				TodoStore.update(task.id, 'tags', tags);
+				TodoStore.update(task.id, { tags: tags} );
 			}
 		});
 	},
 
 	updateActivityColor: function(id, color)	{
-		ActivityStore.update(id, 'color', color);
+		ActivityStore.update(id, { color: color });
 		this.setState({ activities: ActivityStore.get() });
 	},
 
@@ -282,57 +283,57 @@ Layout.Help = React.createClass({
 		return (
 			<div>
 				<div className="Help__Section">
-            <img src="images/icon128.png" className="Logo"/>
-            <h1>Todo Tab</h1>
-            <p>A simple to-do list for those who spend most of the day in front of the browser. No login, no big background image, just a simple Todo list. - version 1.0.0</p>
-        </div>
-        <div className="Break">* &emsp; * &emsp; *</div>
-        <div className="Features">
-            <blockquote>
-                “Identify your tasks faster<br/>through activity based color coding”
-            </blockquote>
+			<img src="images/icon128.png" className="Logo"/>
+			<h1>Todo Tab</h1>
+			<p>A simple to-do list for those who spend most of the day in front of the browser. No login, no big background image, just a simple Todo list. - version 1.0.0</p>
+		</div>
+		<div className="Break">* &emsp; * &emsp; *</div>
+		<div className="Features">
+			<blockquote>
+				“Identify your tasks faster<br/>through activity based color coding”
+			</blockquote>
 
-            <div className="ColorCodes">
-                <img className="ColorCodesImage" src="images/color-1.png"/>
-                <img className="ColorCodesImage" src="images/color-4.png"/>
-                <img className="ColorCodesImage" src="images/color-3.png"/>
-                <img className="ColorCodesImage" src="images/color-2.png"/>
-            </div>
+			<div className="ColorCodes">
+				<img className="ColorCodesImage" src="images/color-1.png"/>
+				<img className="ColorCodesImage" src="images/color-4.png"/>
+				<img className="ColorCodesImage" src="images/color-3.png"/>
+				<img className="ColorCodesImage" src="images/color-2.png"/>
+			</div>
 
-            <p>This tool parses your task and looks for activities like <i>call, meeting, reply, etc.</i> and show it in different colours. This colour scheme will help you to traverse the list faster. Currently, the tool parses a standard set of activities which are listed below.</p>
-            <div className="ColorCodes">
-                <span className="tag tag--send">send</span>
-                <span className="tag tag--mail">mail</span>
-                <span className="tag tag--reply">reply</span>
-                <span className="tag tag--post">post</span>
-                <span className="tag tag--call">call</span>
-                <span className="tag tag--meeting">meeting</span>
-                <span className="tag tag--discuss">discuss</span>
-                <span className="tag tag--brainstorm">brainstorm</span>
-                <span className="tag tag--buy">buy</span>
-                <span className="tag tag--get">get</span>
-                <span className="tag tag--book">book</span>
-                <span className="tag tag--order">order</span>
-                <span className="tag tag--work">work</span>
-                <span className="tag tag--personal">personal</span>
-                <span className="tag tag--write">write</span>
-                <span className="tag tag--draft">draft</span>
-                <span className="tag tag--publish">publish</span>
-            </div>
+			<p>This tool parses your task and looks for activities like <i>call, meeting, reply, etc.</i> and show it in different colours. This colour scheme will help you to traverse the list faster. Currently, the tool parses a standard set of activities which are listed below.</p>
+			<div className="ColorCodes">
+				<span className="tag tag--send">send</span>
+				<span className="tag tag--mail">mail</span>
+				<span className="tag tag--reply">reply</span>
+				<span className="tag tag--post">post</span>
+				<span className="tag tag--call">call</span>
+				<span className="tag tag--meeting">meeting</span>
+				<span className="tag tag--discuss">discuss</span>
+				<span className="tag tag--brainstorm">brainstorm</span>
+				<span className="tag tag--buy">buy</span>
+				<span className="tag tag--get">get</span>
+				<span className="tag tag--book">book</span>
+				<span className="tag tag--order">order</span>
+				<span className="tag tag--work">work</span>
+				<span className="tag tag--personal">personal</span>
+				<span className="tag tag--write">write</span>
+				<span className="tag tag--draft">draft</span>
+				<span className="tag tag--publish">publish</span>
+			</div>
 
-        </div>
-        <div className="Break">* &emsp; * &emsp; *</div>
-        <div className="Features">
-            <blockquote>“Tips to make a better to-do”</blockquote>
-            <p>To-do list helps you to offload tasks from your memory, but at the same time as the list grows it will make us gloomy. So we need to be smart building the task list.</p>
-            <p>First of all, make the to-do smaller. Because we only have limited time in a day to do it. If you have a big task on your plate, try to split it into small tasks. But when you are writing it, write it completely. Don't try to shorten it. e.g., instead of writing "call Peter",  write "call Peter to finalise weekend plan". By the end of the day reevaluate your to-do list, remove the low priority tasks and add new tasks for the next day. And sleep peacefully!</p>
-        </div>
-        <div className="Break">* &emsp; * &emsp; *</div>
-        <div className="Features">
-            <blockquote>“Made with love”</blockquote>
-            <p>This tool is designed and developed by a triad called <a href="http://27ae60.com">27AE60</a> based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
-            <img className="team-logo" src="images/27ae60-logo.png"/>
-        </div>
+		</div>
+		<div className="Break">* &emsp; * &emsp; *</div>
+		<div className="Features">
+			<blockquote>“Tips to make a better to-do”</blockquote>
+			<p>To-do list helps you to offload tasks from your memory, but at the same time as the list grows it will make us gloomy. So we need to be smart building the task list.</p>
+			<p>First of all, make the to-do smaller. Because we only have limited time in a day to do it. If you have a big task on your plate, try to split it into small tasks. But when you are writing it, write it completely. Don't try to shorten it. e.g., instead of writing "call Peter",  write "call Peter to finalise weekend plan". By the end of the day reevaluate your to-do list, remove the low priority tasks and add new tasks for the next day. And sleep peacefully!</p>
+		</div>
+		<div className="Break">* &emsp; * &emsp; *</div>
+		<div className="Features">
+			<blockquote>“Made with love”</blockquote>
+			<p>This tool is designed and developed by a triad called <a href="http://27ae60.com">27AE60</a> based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
+			<img className="team-logo" src="images/27ae60-logo.png"/>
+		</div>
 			</div>
 		)
 	}
@@ -406,10 +407,10 @@ var TextBox = React.createClass({
 
 var Todolist = React.createClass({
 		propTypes: {
-				items: React.PropTypes.object,
-				activities: React.PropTypes.array,
-				onTaskCheck: React.PropTypes.func,
-				onTaskDelete: React.PropTypes.func
+			items: React.PropTypes.object,
+			activities: React.PropTypes.array,
+			onTaskCheck: React.PropTypes.func,
+			onTaskDelete: React.PropTypes.func
 		},
 
 		componentWillReceiveProps: function(nextProps)	{
@@ -425,10 +426,10 @@ var Todolist = React.createClass({
 		},
 
 		getDefaultProps: function()	{
-				return {
-						items: {},
-						activities: []
-				}
+			return {
+				items: {},
+				activities: []
+			}
 		},
 
 		getActivityObjects: function(tags)	{
@@ -445,9 +446,11 @@ var Todolist = React.createClass({
 
 		unfinishedTasks: function()	{
 			var tags = [];
-			return this.props.items.unfinished.map(function(item) {
+			return this.props.items.unfinished.map(function(item, index) {
+				console.log(index);
 				return (
 					<Todolist.Item
+						index={index}
 						id={item.id}
 						createdOn={item.createdOn}
 						task={item.task}
@@ -467,6 +470,7 @@ var Todolist = React.createClass({
 
 				return (
 					<Todolist.Item
+						index={-1}
 						id={item.id}
 						createdOn={item.createdOn}
 						task={item.task}
@@ -526,13 +530,31 @@ Todolist.ToggleList = React.createClass({
 
 Todolist.Item = React.createClass({
 	propTypes: {
-			id: React.PropTypes.string,
-			createdOn: React.PropTypes.string,
-			task: React.PropTypes.string,
-			done: React.PropTypes.bool,
-			tags: React.PropTypes.array,
-			onCheck: React.PropTypes.func,
-			onDelete: React.PropTypes.func
+		index: React.PropTypes.number,
+		id: React.PropTypes.string,
+		createdOn: React.PropTypes.string,
+		task: React.PropTypes.string,
+		done: React.PropTypes.bool,
+		tags: React.PropTypes.array,
+		onCheck: React.PropTypes.func,
+		onDelete: React.PropTypes.func
+	},
+
+	_lastHoverIndex: -1,
+
+	getInitialState: function()	{
+		return {
+			isDragged: false,
+			draggingIndex: null
+		}
+	},
+
+	componentWillMount: function()	{
+		this.setState({ draggingIndex: this.props.index });
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({ draggingIndex: nextProps.index });
 	},
 
 	createColourCoding: function(task, tags, done)	{
@@ -579,29 +601,55 @@ Todolist.Item = React.createClass({
 			this.props.onDelete(this.props.id);
 	},
 
-	render: function()	{
-			var todoClasses = classNames({
-					'Todo': true,
-					'Todo--checked': this.props.done
-			});
+	handleDragStart: function(e)	{
+		const draggingIndex = e.currentTarget.dataset.id;  
+		this.setState({
+			isDragged: true,
+		  	draggingIndex: draggingIndex
+		});
+	},
 
-			return (
-					<li className={todoClasses}>
-							<ol className="Todo__Handle">
-								<li></li> <li></li> <li></li>
-							</ol>
-							<span className="Todo__Check">
-									<i onClick={this.handleCheck.bind(this)}></i>
-							</span>
-							<p className="Todo__Task"
-									onClick={this.handleCheck.bind(this)}
-									dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
-							<button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
-							<span className="Todo__CreatedOn">
-									{moment(this.props.createdOn, 'x').fromNow()}
-							</span>
-					</li>
-			);
+	handleDragOver: function(e) {
+		e.preventDefault();
+		var hoverIndex = parseInt(e.currentTarget.dataset.id);
+		console.log(this.state.draggingIndex, hoverIndex);
+
+		this._lastHoverIndex = hoverIndex;
+
+		return false;
+	},
+
+	handleDragEnd: function()  {
+		this.setState({ isDragged: false });
+	},
+
+	render: function()	{
+
+		var todoClasses = classNames({
+			'Todo': true,
+			'Todo--checked': this.props.done,
+			'Todo--dragging': this.state.isDragged
+		});
+
+		return (
+			<li className={todoClasses} 
+				draggable={!this.props.done}
+				onDragStart={this.handleDragStart.bind(null)}
+				onDragOver={this.handleDragOver.bind(null)}
+				onDragEnd={this.handleDragEnd.bind(null)}
+				data-id={this.props.index}>
+					<span className="Todo__Check">
+						<i onClick={this.handleCheck.bind(this)}></i>
+					</span>
+					<p className="Todo__Task"
+							onClick={this.handleCheck.bind(this)}
+							dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
+					<button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
+					<span className="Todo__CreatedOn">
+							{moment(this.props.createdOn, 'x').fromNow()}
+					</span>
+			</li>
+		);
 	}
 });
 
@@ -629,7 +677,6 @@ var Footer = React.createClass({
 	},
 
 	icon: function(link)	{
-		console.log(link)
 		switch(link)	{
 			case 'customize':
 				return <Icon.Settings/>
@@ -841,8 +888,8 @@ Icon.List = React.createClass({
 
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
+	var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+	return v.toString(16);
   });
 }
 
