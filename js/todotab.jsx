@@ -1,6 +1,27 @@
 'use strict';
 
-var TodoStore = new Store('TodoTab-Tasks');
+var todoPostSave = function()    {
+	var unfinished = this.data.filter(function(task)   {
+		return task.done === false;
+	});
+
+	var finished = this.data.filter(function(task)   {
+		return task.done === true;
+	});
+
+	if(finished.length)    {
+		finished = finished.sort(function(x, y){
+			return y.checkedOn - x.checkedOn;
+		});
+	}
+
+	this.data = unfinished.concat(finished);
+
+	return this.data;
+};
+
+var TodoStore = new Store('TodoTab-Tasks', todoPostSave);
+var FinishedStore = new Store('TodoTab-Finished');
 var ActivityStore = new Store('TodoTab-Activities');
 
 function extractHostname(url) {
