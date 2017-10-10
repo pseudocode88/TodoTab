@@ -1,20 +1,23 @@
-;
 (function(window,document) {
 
     'use strict';
 
-    function Store(name) {
+    function Store(name, postSave) {
+        this.postSave = (postSave) ? postSave: function(){};
         this.name = name;
         this._get();
     }
 
     Store.prototype = {
         _save: function(data) {
+            this.postSave();
             localStorage.setItem(this.name, JSON.stringify(this.data));
         },
+        
         _get: function() {
             this.data = JSON.parse(localStorage.getItem(this.name)) || [];
         },
+
         add: function(data) {
             if (data) {
                 this.data.unshift(data)
