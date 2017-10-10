@@ -4,7 +4,8 @@
   "description": "A simple todo list of new tab",
   "main": "background.js",
   "scripts": {
-    "watch": "watch -f 'js/todotab.jsx' -r 'node_modules/.bin/babel js/todotab.jsx -o js/compile/todotab.js'"
+    "build": "node compile.js",
+    "watch": "watch -f 'js/todotab.jsx' -r 'node compile.js'"
   },
   "repository": {
     "type": "git",
