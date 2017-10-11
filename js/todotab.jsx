@@ -110,7 +110,6 @@ Layout.Home = React.createClass({
   },
 
 	componentDidMount: function()	{
-		console.log('layout cdm state', TodoStore.get());
 		this.setState({
 				tasks: TodoStore.get(),
 				activities: ActivityStore.get()
@@ -169,7 +168,6 @@ Layout.Home = React.createClass({
 	},
 
 	render: function()  {
-		console.log('before todo task', this.state);
 		return (
 			<div>
 				<DateTime/>
@@ -455,6 +453,7 @@ var Todolist = React.createClass({
           {!noOfItems ? Empty : null}
           <SortableList
             distance={1}
+            lockToContainerEdges={true}
             items={this.state.hideCompleted ? this.props.items.slice(0, this.props.items.length - noOfFinishedItems + 2) : this.props.items}
             getActivityObjects={this.getActivityObjects}
             onCheck={this.props.onTaskCheck}
