@@ -21,8 +21,5 @@
     "babel-preset-react": "^6.24.1",
     "minifier": "^0.8.1",
     "nodemon": "^1.12.1"
-  },
-  "dependencies": {
-    "react-sortable-hoc": "^0.6.8"
   }
 }
