@@ -159,7 +159,9 @@ Layout.Home = React.createClass({
     this.setState({ tasks: TodoStore.get() });
   },
 
-	setTitleNotification: function(taskCount){
+	setTitleNotification: function() {
+    var taskCount = this.state.tasks.filter(function(e) { return !e.done; }).length;
+
 		if(taskCount === 0)	{
 			document.title = 'Todo Tab';
 		}else {
@@ -168,6 +170,8 @@ Layout.Home = React.createClass({
 	},
 
 	render: function()  {
+    this.setTitleNotification();
+
 		return (
 			<div>
 				<DateTime/>
