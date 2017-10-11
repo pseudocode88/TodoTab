@@ -407,8 +407,13 @@ var Todolist = React.createClass({
 		},
 
 		getInitialState: function()	{
+      var hideCompleted = JSON.parse(localStorage.getItem('rollup'));
+      if (hideCompleted === null) {
+        localStorage.setItem('rollup', true);
+      }
+
 			return {
-        hideCompleted: true
+        hideCompleted : hideCompleted
 			}
 		},
 
@@ -428,6 +433,7 @@ var Todolist = React.createClass({
 		},
 
 		onToggleList: function()	{
+      localStorage.setItem('rollup', !this.state.hideCompleted);
 			this.setState({ hideCompleted: !this.state.hideCompleted });
 		},
 
@@ -458,7 +464,7 @@ var Todolist = React.createClass({
           <SortableList
             distance={1}
             lockToContainerEdges={true}
-            items={this.state.hideCompleted ? this.props.items.slice(0, this.props.items.length - noOfFinishedItems + 2) : this.props.items}
+            items={this.state.hideCompleted ? this.props.items.slice(0, noOfItems - noOfFinishedItems + 2) : this.props.items}
             getActivityObjects={this.getActivityObjects}
             onCheck={this.props.onTaskCheck}
             onDelete={this.props.onTaskDelete}
