@@ -145,7 +145,16 @@ button {
   flex: 1;
   padding: 10px 1em 10px 0;
   line-height: 1.5;
-	cursor: pointer;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.Todo__Task:active { 
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 
 .Todo__Delete {
