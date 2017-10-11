@@ -97,7 +97,7 @@ button {
   align-items: center;
   justify-content: space-between;
   min-height: 50px;
-  transition: .3s;
+  /* transition: .3s; */
   border: 1px solid #eee;
   border-top: 1px solid #fff;
   color: #333;
@@ -125,22 +125,22 @@ button {
   color: rgba(128, 128, 128, 1);
 }
 
-.Todo--dragging {
-  border: 1px solid rgb(234, 214, 172);
-  background-color: rgba(234, 214, 172, 0.3) !important;
-  box-shadow: inset 0px 0px 5px 0px rgba(51, 51, 51, 0.1);
-}
-
-.Todo--dragging .Todo__Delete,
-.Todo--dragging .Todo__CreatedOn {
-  opacity: 0 !important;
-}
-
-.Todo--dragging .Todo__Check i{
-  border: 1px solid rgba(234, 214, 172, 0.3) !important;
-  background-color: rgba(234, 214, 172, 0.7) !important;
-}
-
+/* .Todo--dragging { */
+/*   border: 1px solid rgb(234, 214, 172); */
+/*   background-color: rgba(234, 214, 172, 0.3) !important; */
+/*   box-shadow: inset 0px 0px 5px 0px rgba(51, 51, 51, 0.1); */
+/* } */
+/*  */
+/* .Todo--dragging .Todo__Delete, */
+/* .Todo--dragging .Todo__CreatedOn { */
+/*   opacity: 0 !important; */
+/* } */
+/*  */
+/* .Todo--dragging .Todo__Check i{ */
+/*   border: 1px solid rgba(234, 214, 172, 0.3) !important; */
+/*   background-color: rgba(234, 214, 172, 0.7) !important; */
+/* } */
+/*  */
 .Todo__Handle {
   padding: 1em 0 1em 1em;
   box-sizing: content-box;

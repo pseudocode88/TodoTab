@@ -102,14 +102,15 @@ var Layout = React.createClass({
 });
 
 Layout.Home = React.createClass({
-	getInitialState: function()	{
-		return {
-				tasks: [],
-				activities: []
-		}
-	},
+  getInitialState: function()	{
+    return {
+      tasks: [],
+      activities: []
+    }
+  },
 
 	componentDidMount: function()	{
+		console.log('layout cdm state', TodoStore.get());
 		this.setState({
 				tasks: TodoStore.get(),
 				activities: ActivityStore.get()
@@ -154,22 +155,10 @@ Layout.Home = React.createClass({
 			this.setState({ tasks: TodoStore.get() });
 	},
 
-	sortTodo: function()	{
-			var unfinished = this.state.tasks.filter(function(task)   {
-				return task.done === false ;
-			});
-
-			var finished = this.state.tasks.filter(function(task)   {
-				return task.done === true;
-			});
-
-			this.setTitleNotification(unfinished.length);
-
-			return {
-				unfinished: unfinished,
-				finished: finished
-			};
-	},
+  swapTodo: function(index) {
+    TodoStore.swap(index.oldIndex, index.newIndex);
+    this.setState({ tasks: TodoStore.get() });
+  },
 
 	setTitleNotification: function(taskCount){
 		if(taskCount === 0)	{
@@ -180,6 +169,7 @@ Layout.Home = React.createClass({
 	},
 
 	render: function()  {
+		console.log('before todo task', this.state);
 		return (
 			<div>
 				<DateTime/>
@@ -189,8 +179,9 @@ Layout.Home = React.createClass({
 					onEnter={this.addTask.bind(this)}/>
 
 				<Todolist
-					items={this.sortTodo()}
+					items={this.state.tasks}
 					activities={this.state.activities}
+					onDragDrop={this.swapTodo}
 					onTaskCheck={this.finishTask}
 					onTaskDelete={this.deleteTask}/>
 			</div>
@@ -407,21 +398,15 @@ var TextBox = React.createClass({
 
 var Todolist = React.createClass({
 		propTypes: {
-			items: React.PropTypes.object,
+			items: React.PropTypes.array,
 			activities: React.PropTypes.array,
 			onTaskCheck: React.PropTypes.func,
 			onTaskDelete: React.PropTypes.func
 		},
 
-		componentWillReceiveProps: function(nextProps)	{
-			if(nextProps.items.finished.length >= 3)	{
-				this.setState({hideCompleted: true});
-			}
-		},
-
 		getInitialState: function()	{
 			return {
-				hideCompleted: true
+        hideCompleted: true
 			}
 		},
 
@@ -444,73 +429,75 @@ var Todolist = React.createClass({
 			this.setState({ hideCompleted: !this.state.hideCompleted });
 		},
 
-		unfinishedTasks: function()	{
-			var tags = [];
-			return this.props.items.unfinished.map(function(item, index) {
-				console.log(index);
-				return (
-					<Todolist.Item
-						index={index}
-						id={item.id}
-						createdOn={item.createdOn}
-						task={item.task}
-						done={item.done}
-						tags={this.getActivityObjects(item.tags)}
-						onCheck={this.props.onTaskCheck}
-						onDelete={this.props.onTaskDelete}/>
-				);
-			}, this);
-		},
+    render: function()	{
+      var noOfItems = this.props.items.length;
+      var noOfFinishedItems = this.props.items.filter(function(e) {
+        return e.done;
+      }).length;
 
-		finishedTask: function()	{
-			return this.props.items.finished.map(function(item, index) {
-				if(index >= 2 && this.state.hideCompleted)	{
-					return null;
-				}
+      var ToggleList = (
+        <Todolist.ToggleList
+          toggleMode={this.state.hideCompleted}
+          onClick={this.onToggleList.bind(this)}
+        />
+      );
 
-				return (
-					<Todolist.Item
-						index={-1}
-						id={item.id}
-						createdOn={item.createdOn}
-						task={item.task}
-						done={item.done}
-						tags={[]}
-						onCheck={this.props.onTaskCheck}
-						onDelete={this.props.onTaskDelete}/>
-				);
-			}, this);
-		},
+      var Empty = (
+        <li className="Empty">
+          <img className="Empty__Buddha" src="images/buddha.png"/>
+          “No task remaining.<br/>
+          Take a deep breath and enjoy the peace!”
+        </li>
+      );
 
-		todolistItems: function()	{
-				if(this.props.items.finished.length <= 0 &&
-						this.props.items.unfinished.length <= 0)	{
-					return <Todolist.Empty/>
-				} else {
-					return this.unfinishedTasks().concat(this.finishedTask());
-				}
-		},
+      return (
+        <ul>
+          {!noOfItems ? Empty : null}
+          <SortableList
+            distance={1}
+            items={this.state.hideCompleted ? this.props.items.slice(0, this.props.items.length - noOfFinishedItems + 2) : this.props.items}
+            getActivityObjects={this.getActivityObjects}
+            onCheck={this.props.onTaskCheck}
+            onDelete={this.props.onTaskDelete}
+            onSortEnd={this.props.onDragDrop} />
+          {noOfFinishedItems > 2 ? ToggleList : null}
+        </ul>
+      )
+    }
+});
 
-		todoToggleList: function()	{
-			if(this.props.items.finished.length > 2)	{
-				return (
-					<Todolist.ToggleList 
-						toggleMode={this.state.hideCompleted}
-						onClick={this.onToggleList.bind(this)}/>
-				);
-			}else {
-				return null
-			}
-		},
+var SortableItem = window.SortableHOC.SortableElement(function (_ref) {
+  var item = _ref.value;
+  return (
+    <Todolist.Item
+    index={0}
+    id={item.id}
+    createdOn={item.createdOn}
+    task={item.task}
+    done={item.done}
+    tags={_ref.getActivityObjects(item.tags)}
+    onCheck={_ref.onCheck}
+    onDelete={_ref.onDelete} />
+  )
+});
 
-		render: function()	{
-				return (
-					<ul className="Todolist" id="todos">
-						{this.todolistItems()}
-						{this.todoToggleList()}
-					</ul>
-				);
-		}
+var SortableList = window.SortableHOC.SortableContainer(function (_ref) {
+  return (
+    <ul className="Todolist" id="todos">
+      {
+        _ref.items.map(function (value, index) {
+          return React.createElement(SortableItem, {
+            key: "item-" + index,
+            index: index,
+            value: value,
+            disabled: value.done,
+            getActivityObjects: _ref.getActivityObjects,
+            onCheck: _ref.onCheck,
+            onDelete: _ref.onDelete });
+        })
+      }
+    </ul>
+  )
 });
 
 Todolist.ToggleList = React.createClass({
@@ -540,33 +527,16 @@ Todolist.Item = React.createClass({
 		onDelete: React.PropTypes.func
 	},
 
-	_lastHoverIndex: -1,
-
-	getInitialState: function()	{
-		return {
-			isDragged: false,
-			draggingIndex: null
-		}
-	},
-
-	componentWillMount: function()	{
-		this.setState({ draggingIndex: this.props.index });
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		this.setState({ draggingIndex: nextProps.index });
-	},
-
 	createColourCoding: function(task, tags, done)	{
-		if(!done)	{
-			tags.forEach(function(tag) {
-					task = task.replace(
-							new RegExp('\\b' + tag.name + '\\b', 'gi'),
-							'<span class="Color Color--' + tag.color + '">'+tag.name+'</span>'
-					);
-			});
-		}
-		
+    if(!done)	{
+      tags.forEach(function(tag) {
+        task = task.replace(
+          new RegExp('\\b' + tag.name + '\\b', 'gi'),
+          '<span class="Color Color--' + tag.color + '">'+tag.name+'</span>'
+        );
+      });
+    }
+
 		var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
 		var urls = task.match(urlRegex),
@@ -576,92 +546,48 @@ Todolist.Item = React.createClass({
 			urls.forEach(function(url)	{
 				domain = extractRootDomain(url);
 				task = task.replace(
-					url, 
+					url,
 					'<a href="' + url +'" class="Todo__Link" target="_blank" onclick="function(e) { e.stopPropagation(); }">' + domain + '…</a>'
 				);
 			}, this);
 		}
-		
+
 		return { __html: task }
 	},
 
-	handleCheck: function(e)	{
-		if(e.target.className !== 'Todo__Link')	{
-			this.props.onCheck(this.props.id, this.props.done);
-		}
-	},
+  handleCheck: function(e)	{
+    e.stopPropagation();
+    if(e.target.className !== 'Todo__Link'){
+      this.props.onCheck(this.props.id, this.props.done);
+    }
+  },
 
-	handleLinkClick: function(e)	{
-		return function(e) {
-			e.stopPropagation();
-		};
-	},
-
-	handleDelete: function()	{
-			this.props.onDelete(this.props.id);
-	},
-
-	handleDragStart: function(e)	{
-		const draggingIndex = e.currentTarget.dataset.id;  
-		this.setState({
-			isDragged: true,
-		  	draggingIndex: draggingIndex
-		});
-	},
-
-	handleDragOver: function(e) {
-		e.preventDefault();
-		var hoverIndex = parseInt(e.currentTarget.dataset.id);
-		console.log(this.state.draggingIndex, hoverIndex);
-
-		this._lastHoverIndex = hoverIndex;
-
-		return false;
-	},
-
-	handleDragEnd: function()  {
-		this.setState({ isDragged: false });
-	},
+  handleDelete: function()	{
+    this.props.onDelete(this.props.id);
+  },
 
 	render: function()	{
-
 		var todoClasses = classNames({
 			'Todo': true,
 			'Todo--checked': this.props.done,
-			'Todo--dragging': this.state.isDragged
 		});
 
-		return (
-			<li className={todoClasses} 
-				draggable={!this.props.done}
-				onDragStart={this.handleDragStart.bind(null)}
-				onDragOver={this.handleDragOver.bind(null)}
-				onDragEnd={this.handleDragEnd.bind(null)}
-				data-id={this.props.index}>
-					<span className="Todo__Check">
-						<i onClick={this.handleCheck.bind(this)}></i>
-					</span>
-					<p className="Todo__Task"
-							onClick={this.handleCheck.bind(this)}
-							dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
-					<button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
-					<span className="Todo__CreatedOn">
-							{moment(this.props.createdOn, 'x').fromNow()}
-					</span>
-			</li>
-		);
-	}
-});
-
-Todolist.Empty = React.createClass({
-	render: function()	{
-		return (
-			<li className="Empty">
-				<img className="Empty__Buddha" src="images/buddha.png"/>
-				“No task remaining.<br/>
-				Take a deep breath and enjoy the peace!”
-			</li>
-		);
+    return (
+      <li className={todoClasses}
+        draggable={!this.props.done}
+        data-id={this.props.index}>
+        <span className="Todo__Check">
+          <i onClick={this.handleCheck.bind(this)}></i>
+        </span>
+        <p className="Todo__Task"
+          onClick={this.handleCheck.bind(this)}
+          dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
+        <button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
+        <span className="Todo__CreatedOn">
+          {moment(this.props.createdOn, 'x').fromNow()}
+        </span>
+      </li>
+    );
 	}
 });
 
@@ -695,7 +621,7 @@ var Footer = React.createClass({
 				"Links__Item": true,
 				"Links__Item--selected": (layout.link === this.props.layout)
 			});
-			
+
 			return (
 				<li className={linksItemClasses}
 					onClick={this.goto.bind(this, layout.link)}>

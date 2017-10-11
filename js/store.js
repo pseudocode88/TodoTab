@@ -13,7 +13,7 @@
             this.postSave();
             localStorage.setItem(this.name, JSON.stringify(this.data));
         },
-        
+
         _get: function() {
             this.data = JSON.parse(localStorage.getItem(this.name)) || [];
         },
@@ -48,7 +48,7 @@
                 }
             }
         },
-        
+
         update: function(id, changes) {
             var index = find(this.data, 'id', id).index;
             if (index > -1) {
@@ -65,6 +65,13 @@
                 return find(this.data, attr, value).data;
             }
             return this.data;
+        },
+
+        swap: function(oldIndex, newIndex) {
+          var temp = this.data[oldIndex];
+          this.data[oldIndex] = this.data[newIndex];
+          this.data[newIndex] = temp;
+          this._save();
         }
     }
 
