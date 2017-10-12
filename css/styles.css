@@ -107,7 +107,7 @@ button {
   box-sizing: border-box;
 }
 
-.Todo:last-child {
+.Todolist--Only li:last-child {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
@@ -151,7 +151,7 @@ button {
   cursor: -webkit-grab;
 }
 
-.Todo__Task:active { 
+.Todo__Task:active {
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;

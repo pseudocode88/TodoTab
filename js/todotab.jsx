@@ -451,26 +451,29 @@ var Todolist = React.createClass({
       );
 
       var Empty = (
-        <li className="Empty">
+        <div className="Empty">
           <img className="Empty__Buddha" src="images/buddha.png"/>
           “No task remaining.<br/>
           Take a deep breath and enjoy the peace!”
-        </li>
+        </div>
       );
 
+      // IMP: Distance of 1 to avoid click events from children
+      // of SortableList being swallowed.
       return (
-        <ul>
+        <div>
           {!noOfItems ? Empty : null}
           <SortableList
             distance={1}
             lockToContainerEdges={true}
+            showBorder={noOfFinishedItems <= 2}
             items={this.state.hideCompleted ? this.props.items.slice(0, noOfItems - noOfFinishedItems + 2) : this.props.items}
             getActivityObjects={this.getActivityObjects}
             onCheck={this.props.onTaskCheck}
             onDelete={this.props.onTaskDelete}
             onSortEnd={this.props.onDragDrop} />
           {noOfFinishedItems > 2 ? ToggleList : null}
-        </ul>
+        </div>
       )
     }
 });
@@ -491,8 +494,15 @@ var SortableItem = window.SortableHOC.SortableElement(function (_ref) {
 });
 
 var SortableList = window.SortableHOC.SortableContainer(function (_ref) {
+  // Adding Todolist--Only to add bottom-borders when ViewAll or RollUp
+  // is hidden.
+  var todoListCx = classNames({
+    'Todolist': true,
+    'Todolist--Only': _ref.showBorder,
+  });
+
   return (
-    <ul className="Todolist" id="todos">
+    <ul className={todoListCx} id="todos">
       {
         _ref.items.map(function (value, index) {
           return React.createElement(SortableItem, {
@@ -517,9 +527,9 @@ Todolist.ToggleList = React.createClass({
 
 	render: function()	{
 		return (
-			<li className="Todo Todo--toggle" onClick={this.props.onClick}>
+			<div className="Todo Todo--toggle" onClick={this.props.onClick}>
 				{(this.props.toggleMode) ? 'View All' : 'Roll Up'}
-			</li>
+			</div>
 		);
 	}
 });
