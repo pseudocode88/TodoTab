@@ -459,7 +459,8 @@ var Todolist = React.createClass({
       );
 
       // IMP: Distance of 1 to avoid click events from children
-      // of SortableList being swallowed.
+      // of SortableList being swallowed. Also, '2' is the limit
+      // of no of finished items to display.
       return (
         <div>
           {!noOfItems ? Empty : null}
@@ -482,7 +483,7 @@ var SortableItem = window.SortableHOC.SortableElement(function (_ref) {
   var item = _ref.value;
   return (
     <Todolist.Item
-    index={0}
+    index={_ref.index}
     id={item.id}
     createdOn={item.createdOn}
     task={item.task}
