@@ -165,7 +165,7 @@ Layout.Home = React.createClass({
 		if(taskCount === 0)	{
 			document.title = 'Todo Tab';
 		}else {
-			document.title = '(' + taskCount + ') Todo Tab';
+      document.title = '(' + taskCount + ') task' + (taskCount > 1 ? 's' : '')  +' remaining.';
 		}
 	},
 
