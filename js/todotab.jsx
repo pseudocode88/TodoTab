@@ -125,8 +125,20 @@ Layout.Home = React.createClass({
 		this.setState({ tasks: TodoStore.get() });
 	},
 
+  editTask: function(id, task) {
+    TodoStore.update(id, {
+      task: task
+    });
+
+    this.setState({ tasks: TodoStore.get() });
+  },
+
 	addTask: function(task)	{
 		var matches = [];
+
+    if (!task) {
+      return false;
+    }
 
 		this.state.activities.forEach(function(activity) {
 				var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
@@ -185,6 +197,7 @@ Layout.Home = React.createClass({
 					activities={this.state.activities}
 					onDragDrop={this.swapTodo}
 					onTaskCheck={this.finishTask}
+					onTaskRename={this.editTask}
 					onTaskDelete={this.deleteTask}/>
 			</div>
 		);
@@ -465,12 +478,15 @@ var Todolist = React.createClass({
         <div>
           {!noOfItems ? Empty : null}
           <SortableList
+            lockAxis="y"
             distance={1}
+            pressThreshold={5}
             lockToContainerEdges={true}
             showBorder={noOfFinishedItems <= 2}
             items={this.state.hideCompleted ? this.props.items.slice(0, noOfItems - noOfFinishedItems + 2) : this.props.items}
             getActivityObjects={this.getActivityObjects}
             onCheck={this.props.onTaskCheck}
+            onEdit={this.props.onTaskRename}
             onDelete={this.props.onTaskDelete}
             onSortEnd={this.props.onDragDrop} />
           {noOfFinishedItems > 2 ? ToggleList : null}
@@ -490,6 +506,7 @@ var SortableItem = window.SortableHOC.SortableElement(function (_ref) {
     done={item.done}
     tags={_ref.getActivityObjects(item.tags)}
     onCheck={_ref.onCheck}
+    onEdit={_ref.onEdit}
     onDelete={_ref.onDelete} />
   )
 });
@@ -513,6 +530,7 @@ var SortableList = window.SortableHOC.SortableContainer(function (_ref) {
             disabled: value.done,
             getActivityObjects: _ref.getActivityObjects,
             onCheck: _ref.onCheck,
+            onEdit: _ref.onEdit,
             onDelete: _ref.onDelete });
         })
       }
@@ -544,7 +562,8 @@ Todolist.Item = React.createClass({
 		done: React.PropTypes.bool,
 		tags: React.PropTypes.array,
 		onCheck: React.PropTypes.func,
-		onDelete: React.PropTypes.func
+    onDelete: React.PropTypes.func,
+    onEdit: React.PropTypes.func
 	},
 
 	createColourCoding: function(task, tags, done)	{
@@ -567,7 +586,7 @@ Todolist.Item = React.createClass({
 				domain = extractRootDomain(url);
 				task = task.replace(
 					url,
-					'<a href="' + url +'" class="Todo__Link" target="_blank" onclick="function(e) { e.stopPropagation(); }">' + domain + '…</a>'
+					'<a href="' + url +'" data-url="' + url  + '" class="Todo__Link" target="_blank" onclick="function(e) { e.stopPropagation(); }">' + domain + '…</a>'
 				);
 			}, this);
 		}
@@ -586,6 +605,41 @@ Todolist.Item = React.createClass({
     this.props.onDelete(this.props.id);
   },
 
+  onKeyDown: function(e) {
+    e.stopPropagation();
+    const value = e.target.value;
+
+    switch (e.key) {
+      case 'Escape':
+        this.textField.innerHTML = this.prevTextFieldHTML;
+        break;
+      case 'Enter':
+        if (!value || this.props.task === value) {
+          this.textField.innerHTML = this.prevTextFieldHTML;
+          return;
+        }
+
+        this.props.onEdit(this.props.id, e.target.value);
+        break;
+      default:
+        break;
+    }
+  },
+
+  handleEdit: function() {
+    this.prevTextFieldHTML = this.textField.innerHTML;
+
+    var input = document.createElement('input');
+    input.value = this.props.task;
+    input.className = 'Todo__Input';
+    input.onkeydown = this.onKeyDown.bind(this);
+
+    this.textField.innerHTML = "";
+    this.textField.appendChild(input);
+
+    input.focus();
+  },
+
 	render: function()	{
 		var todoClasses = classNames({
 			'Todo': true,
@@ -600,9 +654,11 @@ Todolist.Item = React.createClass({
           <i onClick={this.handleCheck.bind(this)}></i>
         </span>
         <p className="Todo__Task"
+          ref={function (text) { this.textField = text; }.bind(this)}
           onClick={this.handleCheck.bind(this)}
           dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
         <button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
+        <button className="Todo__Delete" onClick={this.handleEdit.bind(this)}>Edit</button>
         <span className="Todo__CreatedOn">
           {moment(this.props.createdOn, 'x').fromNow()}
         </span>
