@@ -125,6 +125,10 @@ button {
   color: rgba(128, 128, 128, 1);
 }
 
+.Todo--onedit {
+  background: #fafafa;
+}
+
 .Todo__Check {
   padding: 0 1em;
   width: 50px;
@@ -164,6 +168,31 @@ button {
   font-size: 16px;
   color: #ccc;
   display: none;
+}
+
+.Todo__Delete--onedit { display: none !important; }
+
+.Todo__Edit {
+  border: none;
+  background: none;
+  margin: 0 0 0 1em;
+  font-size: 14px;
+  color: #ccc;
+  display: none;
+}
+
+.Todo__Edit--onedit { display: none !important; }
+
+.Todo__Input {
+  /* height: 35px; */
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  /* padding: 0 8px; */
+  background-color: transparent;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 3px; */
+  border: 0;
 }
 
 .Todo__Link {
@@ -213,6 +242,10 @@ button {
   display: block;
 }
 
+.Todo:hover .Todo__Edit {
+  display: block;
+}
+
 .Todo:hover .Todo__CreatedOn {
   display:block;
   opacity: 0.5;
@@ -224,6 +257,10 @@ button {
 
 .Todo__Delete:hover {
   color: #e74c3c;
+}
+
+.Todo__Edit:hover {
+  color: #27ae60;
 }
 
 .Todo__Link:hover {

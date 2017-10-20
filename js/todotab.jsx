@@ -126,9 +126,20 @@ Layout.Home = React.createClass({
 	},
 
   editTask: function(id, task) {
+		var matches = [];
+		
+		this.state.activities.forEach(function(activity) {
+			var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
+
+			if(task.match(regex)) {
+					matches.push(activity.id);
+			}
+		});
+
     TodoStore.update(id, {
-      task: task
-    });
+			task: task,
+			tags: matches
+		});
 
     this.setState({ tasks: TodoStore.get() });
   },
@@ -566,6 +577,12 @@ Todolist.Item = React.createClass({
     onEdit: React.PropTypes.func
 	},
 
+	getInitialState: function() {
+		return {
+			edit: false
+		}
+	},
+
 	createColourCoding: function(task, tags, done)	{
     if(!done)	{
       tags.forEach(function(tag) {
@@ -611,28 +628,34 @@ Todolist.Item = React.createClass({
 
     switch (e.key) {
       case 'Escape':
-        this.textField.innerHTML = this.prevTextFieldHTML;
-        break;
-      case 'Enter':
+				this.textField.innerHTML = this.prevTextFieldHTML;
+				this.setState({ edit: false });
+				break;
+				
+			case 'Enter':
+				this.setState({ edit: false });
         if (!value || this.props.task === value) {
           this.textField.innerHTML = this.prevTextFieldHTML;
           return;
         }
-
-        this.props.onEdit(this.props.id, e.target.value);
-        break;
+				this.props.onEdit(this.props.id, e.target.value);
+				break;
+				
       default:
         break;
     }
   },
 
   handleEdit: function() {
+		this.setState({ edit: true });
+
     this.prevTextFieldHTML = this.textField.innerHTML;
 
     var input = document.createElement('input');
     input.value = this.props.task;
     input.className = 'Todo__Input';
-    input.onkeydown = this.onKeyDown.bind(this);
+		input.onkeydown = this.onKeyDown.bind(this);
+		input.onclick = function(e) { e.stopPropagation(); e.preventDefault(); }
 
     this.textField.innerHTML = "";
     this.textField.appendChild(input);
@@ -644,6 +667,17 @@ Todolist.Item = React.createClass({
 		var todoClasses = classNames({
 			'Todo': true,
 			'Todo--checked': this.props.done,
+			'Todo--onedit': this.state.edit,
+		});
+
+		var todoEditClasses = classNames({
+			'Todo__Edit': true,
+			'Todo__Edit--onedit': this.state.edit
+		});
+
+		var todoDeleteClasses = classNames({
+			'Todo__Delete': true,
+			'Todo__Delete--onedit': this.state.edit
 		});
 
     return (
@@ -657,8 +691,8 @@ Todolist.Item = React.createClass({
           ref={function (text) { this.textField = text; }.bind(this)}
           onClick={this.handleCheck.bind(this)}
           dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
-        <button className="Todo__Delete" onClick={this.handleDelete.bind(this)}>✖</button>
-        <button className="Todo__Delete" onClick={this.handleEdit.bind(this)}>Edit</button>
+				<button className={todoEditClasses} onClick={this.handleEdit.bind(this)}>edit</button>
+        <button className={todoDeleteClasses} onClick={this.handleDelete.bind(this)}>✖</button>
         <span className="Todo__CreatedOn">
           {moment(this.props.createdOn, 'x').fromNow()}
         </span>
