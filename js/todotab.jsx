@@ -228,6 +228,9 @@ Layout.Customize = React.createClass({
 	},
 
 	addActivity: function(name) {
+
+		name = name.replace(/\s+$/, '');
+		
 		var activity = {
 			id: uuid(),
 			name: name,
