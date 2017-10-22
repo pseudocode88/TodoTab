@@ -67,10 +67,13 @@
             return this.data;
         },
 
-        swap: function(oldIndex, newIndex) {
-          var temp = this.data[oldIndex];
-          this.data[oldIndex] = this.data[newIndex];
-          this.data[newIndex] = temp;
+        move: function(oIdx, nIdx) {
+          var elm = this.data[oIdx];
+          var fArray = this.data.filter(function (e) {
+            return e !== elm;
+          });
+
+          this.data = fArray.slice(0, nIdx).concat(elm).concat(fArray.slice(nIdx));
           this._save();
         }
     }

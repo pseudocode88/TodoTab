@@ -177,8 +177,8 @@ Layout.Home = React.createClass({
 			this.setState({ tasks: TodoStore.get() });
 	},
 
-  swapTodo: function(index) {
-    TodoStore.swap(index.oldIndex, index.newIndex);
+  moveTodo: function(index) {
+    TodoStore.move(index.oldIndex, index.newIndex);
     this.setState({ tasks: TodoStore.get() });
   },
 
@@ -206,7 +206,7 @@ Layout.Home = React.createClass({
 				<Todolist
 					items={this.state.tasks}
 					activities={this.state.activities}
-					onDragDrop={this.swapTodo}
+					onDragDrop={this.moveTodo}
 					onTaskCheck={this.finishTask}
 					onTaskRename={this.editTask}
 					onTaskDelete={this.deleteTask}/>

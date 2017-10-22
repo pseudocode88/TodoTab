@@ -5,7 +5,7 @@
   "main": "background.js",
   "scripts": {
     "build": "node compile.js",
-    "watch": "nodemon --exec 'node compile.js' -w js/todotab.jsx"
+    "watch": "nodemon --exec 'node compile.js' -w js/todotab.jsx -w js/store.js"
   },
   "repository": {
     "type": "git",
