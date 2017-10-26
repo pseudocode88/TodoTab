@@ -401,6 +401,23 @@ button {
 .Color--default-bg {  background: #A5A5A7; }
 
 
+.ClearFinishedTask {
+  text-align: center;
+  display: block;
+  margin: 20px auto 20px auto;
+  color: #8c7547;
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.1px;
+  opacity: 0.5;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ClearFinishedTask:hover {
+  opacity: 1;
+}
+
 .Help, .Customize {
   width: 600px;
   margin: auto;

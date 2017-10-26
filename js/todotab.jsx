@@ -180,7 +180,21 @@ Layout.Home = React.createClass({
   moveTodo: function(index) {
     TodoStore.move(index.oldIndex, index.newIndex);
     this.setState({ tasks: TodoStore.get() });
-  },
+	},
+
+	finishedTask: function(task)	{
+		return task.done === true;
+	},
+	
+	clearFinishedTask: function()	{
+		function deleteTask(task)	{
+			console.log(task.id);
+			TodoStore.delete(task.id);
+		}
+
+		this.state.tasks.filter(this.finishedTask).forEach(deleteTask);
+		this.setState({ tasks: TodoStore.get() });
+	},
 
 	setTitleNotification: function() {
     var taskCount = this.state.tasks.filter(function(e) { return !e.done; }).length;
@@ -190,6 +204,15 @@ Layout.Home = React.createClass({
 		}else {
       document.title = '(' + taskCount + ') task' + (taskCount > 1 ? 's' : '')  +' remaining.';
 		}
+	},
+
+	clearFinishedTaskLink: function()	{
+		
+		if(this.state.tasks.filter(this.finishedTask).length > 5) {
+			return <ClearFinishedTask onClick={this.clearFinishedTask}/>
+		}
+
+		return null;
 	},
 
 	render: function()  {
@@ -210,6 +233,7 @@ Layout.Home = React.createClass({
 					onTaskCheck={this.finishTask}
 					onTaskRename={this.editTask}
 					onTaskDelete={this.deleteTask}/>
+					{this.clearFinishedTaskLink()}
 			</div>
 		);
 	}
@@ -701,6 +725,20 @@ Todolist.Item = React.createClass({
         </span>
       </li>
     );
+	}
+});
+
+var ClearFinishedTask = React.createClass({
+	propTypes: {
+		onClick: React.PropTypes.func
+	},
+
+	render: function()	{
+		return (
+			<p className="ClearFinishedTask" onClick={this.props.onClick}>
+				clear all finished tasks
+			</p>
+		);
 	}
 });
 
