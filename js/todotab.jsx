@@ -932,9 +932,56 @@ function uuid() {
   });
 }
 
-function preload()	{
+function addActivity(Activity)	{
+	Activity.id = uuid();
+	ActivityStore.add(Activity);
+}
+
+function addTask(task)	{
+	var matches = [];
+
+	if (!task) {
+		return false;
+	}
+
+	ActivityStore.get().forEach(function(activity) {
+			var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
+
+			if(task.description.match(regex)) {
+					matches.push(activity.id);
+			}
+	});
+
+	var todo = {
+			id: uuid(),
+			createdOn: task.id,
+			checkedOn: Date.now(),
+			task: task.description,
+			tags: matches,
+			done: (task.status) ? false : true
+	};
+
+	TodoStore.add(todo);
+}
+
+function install()	{
+	var version = localStorage.getItem('TodoTab-Version');
+
+	if(version === null) {
+
+		if(ActivityStore.get().length <= 0)	{
+			Activities.forEach(addActivity);	
+		}
+
+		var tasks = JSON.parse(localStorage.getItem('TodoList-01'));
+		tasks.forEach(addTask);
+
+		localStorage.setItem('TodoTab-Version', '2.0.0');
+	}
+
 	if(ActivityStore.get().length <= 0
 		&& localStorage.getItem('TodoTab-Status') === null)	{
+
 		Activities.forEach(function(Activity)	{
 			Activity.id = uuid();
 			ActivityStore.add(Activity);
@@ -945,7 +992,7 @@ function preload()	{
 }
 
 window.onload = function() {
-	preload();
+	install();
 	ReactDOM.render(<Layout/>, document.getElementById('app'));
 };
 
