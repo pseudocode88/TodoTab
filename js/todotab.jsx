@@ -434,9 +434,9 @@ var Todolist = React.createClass({
 		},
 
 		getInitialState: function()	{
-      var hideCompleted = JSON.parse(localStorage.getItem('rollup'));
+      var hideCompleted = JSON.parse(localStorage.getItem('TodoTab-Rollup-State'));
       if (hideCompleted === null) {
-        localStorage.setItem('rollup', true);
+        localStorage.setItem('TodoTab-Rollup-State', true);
       }
 
 			return {
@@ -460,7 +460,7 @@ var Todolist = React.createClass({
 		},
 
 		onToggleList: function()	{
-      localStorage.setItem('rollup', !this.state.hideCompleted);
+      localStorage.setItem('TodoTab-Rollup-State', !this.state.hideCompleted);
 			this.setState({ hideCompleted: !this.state.hideCompleted });
 		},
 
