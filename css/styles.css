@@ -97,7 +97,6 @@ button {
   align-items: center;
   justify-content: space-between;
   min-height: 50px;
-  /* transition: .3s; */
   border: 1px solid #eee;
   border-top: 0;
   color: #333;
@@ -184,14 +183,11 @@ button {
 .Todo__Edit--onedit { display: none !important; }
 
 .Todo__Input {
-  /* height: 35px; */
+  font-family: inherit;
   width: 100%;
   outline: none;
   font-size: 16px;
-  /* padding: 0 8px; */
   background-color: transparent;
-  /* border: 1px solid #ddd; */
-  /* border-radius: 3px; */
   border: 0;
 }
 
@@ -514,7 +510,6 @@ button {
   font-size: 16px;
   color: #333;
   line-height: 1.5;
-  /* margin-bottom: 30px; */
 }
 
 .Pallete {
