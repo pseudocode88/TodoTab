@@ -25,7 +25,7 @@ button {
 
 .app {
   padding: 0 0 2em;
-  width: 620px;
+  width: 600px;
   margin: auto;
 }
 
@@ -97,16 +97,16 @@ button {
   align-items: center;
   justify-content: space-between;
   min-height: 50px;
-  transition: .3s;
   border: 1px solid #eee;
   border-top: 0;
   color: #333;
   background-color: #fff;
   cursor: pointer;
   position: relative;
+  box-sizing: border-box;
 }
 
-.Todo:last-child {
+.Todolist--Only li:last-child {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
@@ -124,23 +124,8 @@ button {
   color: rgba(128, 128, 128, 1);
 }
 
-.Todo__Handle {
-  padding: 1em 0 1em 1em;
-  box-sizing: content-box;
-  width: 15px;
-  height: 9px;
-  display: flex;
-  list-style: none;
-  justify-content: space-between;
-  flex-direction: column;
-  overflow: hidden;
-  cursor: move;
-}
-
-.Todo__Handle li {
-  width: 100%;
-  height: 1px;
-  background: rgba(51, 51, 51, 0.2);
+.Todo--onedit {
+  background: #fafafa;
 }
 
 .Todo__Check {
@@ -163,7 +148,16 @@ button {
   flex: 1;
   padding: 10px 1em 10px 0;
   line-height: 1.5;
-	cursor: pointer;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.Todo__Task:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 
 .Todo__Delete {
@@ -173,6 +167,28 @@ button {
   font-size: 16px;
   color: #ccc;
   display: none;
+}
+
+.Todo__Delete--onedit { display: none !important; }
+
+.Todo__Edit {
+  border: none;
+  background: none;
+  margin: 0 0 0 1em;
+  font-size: 14px;
+  color: #ccc;
+  display: none;
+}
+
+.Todo__Edit--onedit { display: none !important; }
+
+.Todo__Input {
+  font-family: inherit;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  background-color: transparent;
+  border: 0;
 }
 
 .Todo__Link {
@@ -222,6 +238,10 @@ button {
   display: block;
 }
 
+.Todo:hover .Todo__Edit {
+  display: block;
+}
+
 .Todo:hover .Todo__CreatedOn {
   display:block;
   opacity: 0.5;
@@ -233,6 +253,10 @@ button {
 
 .Todo__Delete:hover {
   color: #e74c3c;
+}
+
+.Todo__Edit:hover {
+  color: #27ae60;
 }
 
 .Todo__Link:hover {
@@ -486,7 +510,6 @@ button {
   font-size: 16px;
   color: #333;
   line-height: 1.5;
-  /* margin-bottom: 30px; */
 }
 
 .Pallete {
