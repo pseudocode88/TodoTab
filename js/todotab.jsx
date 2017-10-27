@@ -24,6 +24,10 @@ function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\@\#\~\_]/g, "\\$&");
 }
 
+function tokenRegEx(token) {
+	return new RegExp("(?:^|\\s|" + escapeRegExp(token) + ")(?:$|\\s)", "gi");
+}
+
 var TodoStore = new Store('TodoTab-Tasks', todoPostSave);
 var FinishedStore = new Store('TodoTab-Finished');
 var ActivityStore = new Store('TodoTab-Activities');
@@ -133,9 +137,7 @@ Layout.Home = React.createClass({
 		var matches = [];
 		
 		this.state.activities.forEach(function(activity) {
-			var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
-
-			if(task.match(regex)) {
+			if(task.match(tokenRegEx(activity.name))) {
 					matches.push(activity.id);
 			}
 		});
@@ -156,9 +158,7 @@ Layout.Home = React.createClass({
     }
 
 		this.state.activities.forEach(function(activity) {
-				var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
-
-				if(task.match(regex)) {
+				if(task.match(tokenRegEx(activity.name))) {
 						matches.push(activity.id);
 				}
 		});
@@ -268,14 +268,10 @@ Layout.Customize = React.createClass({
 		ActivityStore.add(activity);
 		this.setState({ activities: ActivityStore.get() });
 
-		var tasks = TodoStore.get(),
-				regex = '';
+		var tasks = TodoStore.get();
 
 		tasks.forEach(function(task) {
-
-			regex = new RegExp('\\b' + name + '\\b', 'gi');
-
-			if(task.task.match(regex)) {
+			if(task.task.match(tokenRegEx(name))) {
 				task.tags.push(activity.id);
 				TodoStore.update(task.id, { tags: task.tags });
 			}
@@ -614,14 +610,24 @@ Todolist.Item = React.createClass({
 		}
 	},
 
+	wrapColourCoding: function(text, color) {
+		return '<span class="Color Color--' + color + '">'+ text +'</span>';
+	},
+	
 	createColourCoding: function(task, tags, done)	{
     if(!done)	{
-      tags.forEach(function(tag) {
-        task = task.replace(
-          new RegExp('\\b' + tag.name + '\\b', 'gi'),
-          '<span class="Color Color--' + tag.color + '">'+tag.name+'</span>'
-        );
-      });
+			var matches = [];
+
+      tags.forEach(function(tag) {	
+
+				matches = task.match(tokenRegEx(tag.name));
+				if(matches) {
+					matches.forEach(function(match)	{
+						task = task.replace(match, this.wrapColourCoding(match, tag.color));
+					}, this);
+				}
+			}, this);
+			debugger
     }
 
 		var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -987,7 +993,7 @@ function addTask(task)	{
 	}
 
 	ActivityStore.get().forEach(function(activity) {
-			var regex = new RegExp('\\b' + activity.name + '\\b', 'gi');
+		var regex = tokenRegEx(activity.name);
 
 			if(task.description.match(regex)) {
 					matches.push(activity.id);
