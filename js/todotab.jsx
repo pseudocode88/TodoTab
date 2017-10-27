@@ -508,7 +508,7 @@ var Todolist = React.createClass({
       var Empty = (
         <div className="Empty">
           <img className="Empty__Buddha" src="images/buddha.png"/>
-          “No task remaining.<br/>
+          “No tasks remaining.<br/>
           Take a deep breath and enjoy the peace!”
         </div>
       );
