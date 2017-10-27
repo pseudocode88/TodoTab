@@ -192,7 +192,6 @@ Layout.Home = React.createClass({
 	
 	clearFinishedTask: function()	{
 		function deleteTask(task)	{
-			console.log(task.id);
 			TodoStore.delete(task.id);
 		}
 
