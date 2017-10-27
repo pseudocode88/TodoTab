@@ -20,6 +20,10 @@ var todoPostSave = function()    {
 	return this.data;
 };
 
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\@\#\~\_]/g, "\\$&");
+}
+
 var TodoStore = new Store('TodoTab-Tasks', todoPostSave);
 var FinishedStore = new Store('TodoTab-Finished');
 var ActivityStore = new Store('TodoTab-Activities');
