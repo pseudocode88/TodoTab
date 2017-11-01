@@ -1,5 +1,7 @@
 'use strict';
 
+var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
 var todoPostSave = function()    {
 	var unfinished = this.data.filter(function(task)   {
 		return task.done === false;
@@ -438,7 +440,7 @@ var TextBox = React.createClass({
 		render: function()	{
 			return (
 					<input type="text"
-						autoFocus
+						autoFocus={!isFirefox}
 						className="TextBox"
 						placeholder={this.props.placeholder}
 						value={this.state.value}
