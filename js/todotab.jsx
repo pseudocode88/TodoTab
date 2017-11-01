@@ -1020,8 +1020,13 @@ function install()	{
 			Activities.forEach(addActivity);	
 		}
 
-		var tasks = JSON.parse(localStorage.getItem('TodoList-01'));
-		tasks.forEach(addTask);
+    var oldTasks = localStorage.getItem('TodoList-01');
+
+    if(oldTasks !== null) {
+      var tasks = JSON.parse(oldTasks);
+      tasks.forEach(addTask);
+    }
+		
 
 		localStorage.setItem('TodoTab-Version', '2.0.0');
 	}
