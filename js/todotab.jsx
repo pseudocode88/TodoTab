@@ -310,11 +310,11 @@ Layout.Customize = React.createClass({
 			<div>
 				<div className="CustomizeHeder">
 					{/* <img src="images/icon128.png" className="Logo"/> */}
-					<h1>Customize Activities</h1>
-					<p>Expand your activity list by adding and managing new tags.</p>
+					<h1>Customize Color Codings</h1>
+					<p>Add and delete your color code vocabulary</p>
 				</div>
 				<TextBox
-					placeholder="Add a custom activity. eg. project, project/todo"
+					placeholder="Add a custom color code. eg. project, project/todo"
 					onEnter={this.addActivity.bind(this)}/>
 
 				<Activitylist items={this.state.activities}
