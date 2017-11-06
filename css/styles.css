@@ -193,7 +193,7 @@ button {
 
 .Todo__Link {
   color: #333;
-  text-decoration-color: rgba(6, 70, 173, 0.6);
+  text-decoration-color: #333;
 }
 
 .Todo__CreatedOn {
