@@ -131,7 +131,7 @@ Layout.Home = React.createClass({
 			done: !done,
 			checkedOn: (done) ? null : Date.now()
 		});
-
+    mixpanel.track("Finish task");
 		this.setState({ tasks: TodoStore.get() });
 	},
 
@@ -148,7 +148,7 @@ Layout.Home = React.createClass({
 			task: task,
 			tags: matches
 		});
-
+    mixpanel.track("Edit task");
     this.setState({ tasks: TodoStore.get() });
   },
 
@@ -174,12 +174,14 @@ Layout.Home = React.createClass({
 				done: false
 		};
 
-		TodoStore.add(todo);
+    TodoStore.add(todo);
+    mixpanel.track("Add task");
 		this.setState({ tasks: TodoStore.get() });
 	},
 
 	deleteTask: function(id)	{
-			TodoStore.delete(id);
+      TodoStore.delete(id);
+      mixpanel.track("Delete task");
 			this.setState({ tasks: TodoStore.get() });
 	},
 
@@ -270,7 +272,7 @@ Layout.Customize = React.createClass({
 		this.setState({ activities: ActivityStore.get() });
 
 		var tasks = TodoStore.get();
-
+    mixpanel.track("Add Activity");
 		tasks.forEach(function(task) {
 			if(task.task.match(tokenRegEx(name))) {
 				task.tags.push(activity.id);
@@ -283,7 +285,7 @@ Layout.Customize = React.createClass({
 	deleteActivity: function(id)	{
 		ActivityStore.delete(id);
 		this.setState({ activities: ActivityStore.get() });
-
+    mixpanel.track("Delete Activity");
 		var tasks = TodoStore.get(),
 				found = -1,
 				tags = [];
@@ -1029,7 +1031,7 @@ function install()	{
       tasks.forEach(addTask);
     }
 		
-
+    mixpanel.track("Update to v2.0.0");
 		localStorage.setItem('TodoTab-Version', '2.0.0');
 	}
 
@@ -1038,7 +1040,8 @@ function install()	{
 
 		Activities.forEach(function(Activity)	{
 			Activity.id = uuid();
-			ActivityStore.add(Activity);
+      ActivityStore.add(Activity);
+      mixpanel.track("Install v2.0.0");
 			localStorage.setItem('TodoTab-Status', 'installed');
 		});
 
@@ -1046,6 +1049,7 @@ function install()	{
 }
 
 window.onload = function() {
+  mixpanel.init("752c57b1305ae840fe06398f966b22cb");
 	install();
 	ReactDOM.render(<Layout/>, document.getElementById('app'));
 };
