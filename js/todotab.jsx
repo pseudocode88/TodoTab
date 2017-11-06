@@ -328,63 +328,166 @@ Layout.Customize = React.createClass({
 Layout.Help = React.createClass({
 	render: function()	{
 		return (
-			<div>
-				<div className="Help__Section">
-			<img src="images/icon128.png" className="Logo"/>
-			<h1>Todo Tab</h1>
-			<p>A simple to-do list for those who spend most of the day in front of the browser. No login, no big background image, just a simple Todo list. - version 1.0.0</p>
-		</div>
-		<div className="Break">* &emsp; * &emsp; *</div>
-		<div className="Features">
-			<blockquote>
-				“Identify your tasks faster<br/>through activity based color coding”
-			</blockquote>
-
-			<div className="ColorCodes">
-				<img className="ColorCodesImage" src="images/color-1.png"/>
-				<img className="ColorCodesImage" src="images/color-4.png"/>
-				<img className="ColorCodesImage" src="images/color-3.png"/>
-				<img className="ColorCodesImage" src="images/color-2.png"/>
-			</div>
-
-			<p>This tool parses your task and looks for activities like <i>call, meeting, reply, etc.</i> and show it in different colours. This colour scheme will help you to traverse the list faster. Currently, the tool parses a standard set of activities which are listed below.</p>
-			<div className="ColorCodes">
-				<span className="tag tag--send">send</span>
-				<span className="tag tag--mail">mail</span>
-				<span className="tag tag--reply">reply</span>
-				<span className="tag tag--post">post</span>
-				<span className="tag tag--call">call</span>
-				<span className="tag tag--meeting">meeting</span>
-				<span className="tag tag--discuss">discuss</span>
-				<span className="tag tag--brainstorm">brainstorm</span>
-				<span className="tag tag--buy">buy</span>
-				<span className="tag tag--get">get</span>
-				<span className="tag tag--book">book</span>
-				<span className="tag tag--order">order</span>
-				<span className="tag tag--work">work</span>
-				<span className="tag tag--personal">personal</span>
-				<span className="tag tag--write">write</span>
-				<span className="tag tag--draft">draft</span>
-				<span className="tag tag--publish">publish</span>
-			</div>
-
-		</div>
-		<div className="Break">* &emsp; * &emsp; *</div>
-		<div className="Features">
-			<blockquote>“Tips to make a better to-do”</blockquote>
-			<p>To-do list helps you to offload tasks from your memory, but at the same time as the list grows it will make us gloomy. So we need to be smart building the task list.</p>
-			<p>First of all, make the to-do smaller. Because we only have limited time in a day to do it. If you have a big task on your plate, try to split it into small tasks. But when you are writing it, write it completely. Don't try to shorten it. e.g., instead of writing "call Peter",  write "call Peter to finalise weekend plan". By the end of the day reevaluate your to-do list, remove the low priority tasks and add new tasks for the next day. And sleep peacefully!</p>
-		</div>
-		<div className="Break">* &emsp; * &emsp; *</div>
-		<div className="Features">
-			<blockquote>“Made with love”</blockquote>
-			<p>This tool is designed and developed by a triad called <a href="http://27ae60.com">27AE60</a> based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
-			<img className="team-logo" src="images/27ae60-logo.png"/>
-		</div>
-			</div>
+      <div>
+        <Layout.Help.Heading/>
+        <div className="Break">* &emsp; * &emsp; *</div>
+        <Layout.Help.WhatsNew/>
+        <div className="Break">* &emsp; * &emsp; *</div>
+        <Layout.Help.Features/>
+        <div className="Break">* &emsp; * &emsp; *</div>
+        <Layout.Help.Tips/>
+        <div className="Break">* &emsp; * &emsp; *</div>
+        <Layout.Help.Credits/>
+        
+        <div className="Features">
+          <img className="team-logo" src="images/27ae60-logo.png"/>
+        </div>
+      </div>
 		)
 	}
+});
+
+Layout.Help.Heading = React.createClass({
+  render: function()  {
+    return (
+      <div className="Help__Section">
+        <img src="images/icon128.png" className="Logo"/>
+        <h1>Todo Tab</h1>
+        <p>A privacy first to-do app - version 2.0.0</p>
+      </div>
+    )
+  }
 })
+
+Layout.Help.WhatsNew = React.createClass({
+  render: function()  {
+    return (
+      <div className="Features Features--whatsnew">
+        <blockquote>
+          “What's new 🎉 on version 2.0.0?”
+        </blockquote>
+
+        <ol className="WhatsNew">
+          <li>
+            One of the most awaited and requested feature, ability to <span className="Color--pomegranate">create and manage custom colour codes</span>
+          </li>
+          <li>
+            You can <span className="Color--greensea">reorder your task list</span> as you wish
+          </li>
+          <li>
+            If you made a typo mistake while adding the task, now you can <span className="Color--pumpkin">edit the description</span>, no more delete and re-entering
+          </li>
+          <li>
+            Show the number of <span className="Color--carrot">remaining task in tab title</span>, this will help you to status of your task list.
+          </li>
+          <li>
+            If you have more than two finished task, todo tab will <span className="Color--belizehole">hide the rest</span> and keep the todo list always small
+          </li>
+          <li>
+            Made <span className="Color--wisteria">urls shorten and clickable</span> in task description
+          </li>
+          <li>
+            If yo have more than 5 finished task, todo tab will give you option to <span className="Color--pomegranate">clear all compeleted task</span> in one go
+          </li>
+        </ol>
+      </div>
+    );
+  }
+});
+
+Layout.Help.Features = React.createClass({
+  render: function()  {
+    return (
+      <div className="Features">
+        <blockquote>“Identify your tasks faster”</blockquote>
+
+        <p>Todo Tab parses your task description and looks for activities <i>(verb)</i> like call, meeting, reply, etc. and show it in different colours. This feature improves the readability of the list and helps you to recognise as well as recall the context faster.</p>
+        
+        <img src="images/todotab-mockup-1.png"/>
+
+        <blockquote>
+          “Customize your colour codes”
+        </blockquote>
+
+        <p>By default Todo Tab provides and a standard set of verbs for you to start. Also, gives you the flexibility to create custom colour codings with special characters. And for the colours, the app provides a palette of 8 colours.</p>
+
+        <ol className="Pallete">
+          <li className="Pallete__Swatch Color--default-bg"></li>
+          <li className="Pallete__Swatch Color--carrot-bg"></li>
+          <li className="Pallete__Swatch Color--pumpkin-bg"></li>
+          <li className="Pallete__Swatch Color--pomegranate-bg"></li>
+          <li className="Pallete__Swatch Color--posh-bg"></li>
+          <li className="Pallete__Swatch Color--greensea-bg"></li>
+          <li className="Pallete__Swatch Color--belizehole-bg"></li>
+          <li className="Pallete__Swatch Color--wisteria-bg"></li>
+        </ol>
+
+        <img src="images/todotab-mockup-2.png"/>
+      </div>
+    );
+  }
+});
+
+Layout.Help.Tips = React.createClass({
+  render: function()  {
+    return (
+      <div className="Features">
+        <blockquote>“Tips to make a better to-do”</blockquote>
+        <p>To-do list helps you to offload tasks from your memory, but at the same time as the list grows it will make us gloomy. So we need to be smart building the task list.</p>
+        <p>First of all, make the to-do smaller. Because we only have limited time in a day to do it. If you have a big task on your plate, try to split it into small tasks. But when you are writing it, write it completely. Don't try to shorten it. e.g., instead of writing "call Peter",  write "call Peter to finalise weekend plan". By the end of the day reevaluate your to-do list, remove the low priority tasks and add new tasks for the next day. And sleep peacefully!</p>
+      </div>
+    )
+  }
+})
+
+Layout.Help.Credits = React.createClass({
+  render: function()  {
+    return (
+      <div className="Features">
+        <blockquote>“Made with love”</blockquote>
+        <p>This tool is designed and developed by a triad called <a href="http://27ae60.com">27AE60</a> based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
+        <p><b>Send us your feeback at:</b> <a href="mailto:hello@27ae60.com">hello@27ae60.com</a></p>
+        <Layout.Help.Subscribe/>
+        <p><b>Credits:</b> Jaison Justus, Rabi C Shah & Suyash Katiyar.</p>
+        <p><b>Special thanks for writing us a feedback:</b> Les Viragh Jr., Gary Elle, Nicole Fetscher, Kimberly Wolfson, Jake Carni, Sridhar Rajendran, Jocelyn, Arun Chandrasekaran, Sudarsh M.S and Russell Jamison</p>
+      </div>
+    )
+  }
+});
+
+Layout.Help.SpecialThanks = React.createClass({
+  render: function()  {
+    return (
+      <div className="Features">
+        <p><b>Special thanks for writing us a feedback:</b></p>
+        <p>Les Viragh Jr., Gary Elle, Nicole Fetscher, Kimberly Wolfson, Jake Carni, Sridhar Rajendran, Jocelyn, Arun Chandrasekaran, Sudarsh M.S and Russell Jamison</p>
+      </div>
+    )
+  }
+});
+
+Layout.Help.Subscribe = React.createClass({
+  handleOnSubmit: function()  {
+    window.open('https://tinyletter.com/27ae60', 'popupwindow', 'scrollbars=yes,width=450,height=600');
+    return true
+  },
+
+  render: function()  {
+    return (
+      <form className="Features Features--subscribe Subscribe" action="https://tinyletter.com/27ae60" method="post" target="popupwindow" onSubmit={this.handleOnSubmit}>
+        <blockquote>
+          “Connect with 27AE60”
+        </blockquote>
+        <p className="Subscribe__Description">Join our mailing list and get updates about our product and service. And we will never, ever, ever, spam your inbox because we also hate spams.</p>
+        <label className="Subscribe__Label" for="tlemail">Enter your email address</label>
+        <input className="Subscribe__Email" type="text" name="email" id="tlemail" />
+        <input type="hidden" value="1" name="embed"/>
+        <input className="Button" type="submit" value="Subscribe"/>
+        <a className="Subscribe__Poweredby" href="https://tinyletter.com" target="_blank">powered by TinyLetter</a>
+      </form>
+    );
+  }
+});
 
 var DateTime = React.createClass({
 		getInitialState: function() {
