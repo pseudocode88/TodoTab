@@ -13,7 +13,6 @@
   },
 
   "background": {
-    "persistance": false,
     "scripts": [
       "background.js"
     ]
