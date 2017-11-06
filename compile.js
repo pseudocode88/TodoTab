@@ -7,6 +7,8 @@ var jsFiles = [
     "js/vendor/classnames.min.js",
     "js/vendor/moment.min.js",
     "js/vendor/react-sortable-hoc.min.js",
+    "js/vendor/mixpanel.js",
+    "js/vendor/xhr.js",
     "js/config.js",
     "js/store.js",
     "js/compile/todotab.js"
