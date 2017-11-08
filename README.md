@@ -11,3 +11,5 @@ A simple todo list for those who spend most of the day in front of the browser. 
 1. `$ git clone git@bitbucket.org:27ae60/todo-tab.git`
 2. `$ npm install`
 3. `$ npm run watch`
+
+**For compiling the JSX files with out watch: ** `$ node compile.js`
