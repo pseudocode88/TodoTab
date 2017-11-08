@@ -441,6 +441,10 @@ button {
   margin-bottom: 30px;
 }
 
+.Help__Section a, .Features a {
+  color: #333;
+}
+
 .Logo {
   width: 40px;
   height: 40px;

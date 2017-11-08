@@ -309,7 +309,6 @@ Layout.Customize = React.createClass({
 		return (
 			<div>
 				<div className="CustomizeHeder">
-					{/* <img src="images/icon128.png" className="Logo"/> */}
 					<h1>Customize Color Codings</h1>
 					<p>Add and delete your color code vocabulary</p>
 				</div>
@@ -336,7 +335,6 @@ Layout.Help = React.createClass({
         <Layout.Help.Features/>
         <div className="Break">* &emsp; * &emsp; *</div>
         <Layout.Help.Tips/>
-        <div className="Break">* &emsp; * &emsp; *</div>
         <Layout.Help.Credits/>
         
         <div className="Features">
@@ -446,10 +444,10 @@ Layout.Help.Credits = React.createClass({
       <div className="Features">
         <blockquote>“Made with love”</blockquote>
         <p>This tool is designed and developed by a triad called <a href="http://27ae60.com">27AE60</a> based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
-        <p><b>Send us your feeback at:</b> <a href="mailto:hello@27ae60.com">hello@27ae60.com</a></p>
         <Layout.Help.Subscribe/>
         <p><b>Credits:</b> Jaison Justus, Rabi C Shah & Suyash Katiyar.</p>
         <p><b>Special thanks for writing us a feedback:</b> Les Viragh Jr., Gary Elle, Nicole Fetscher, Kimberly Wolfson, Jake Carni, Sridhar Rajendran, Jocelyn, Arun Chandrasekaran, Sudarsh M.S and Russell Jamison</p>
+        <blockquote>Send us your feebacks at: <a href="mailto:hello@27ae60.com">hello@27ae60.com</a></blockquote>
       </div>
     )
   }
