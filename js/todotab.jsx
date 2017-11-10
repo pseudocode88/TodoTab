@@ -755,7 +755,7 @@ Todolist.Item = React.createClass({
 
   handleCheck: function(e)	{
     e.stopPropagation();
-    if(e.target.className !== 'Todo__Link'){
+    if(e.target.className !== 'Todo__Link' && !this.state.edit){
       this.props.onCheck(this.props.id, this.props.done);
     }
   },
@@ -764,23 +764,25 @@ Todolist.Item = React.createClass({
     this.props.onDelete(this.props.id);
   },
 
-  onKeyDown: function(e) {
+  handleEdit: function(value)  {
+    this.setState({ edit: false });
+    if (!value || this.props.task === value) {
+      this.textField.innerHTML = this.prevTextFieldHTML;
+      return;
+    }
+
+    this.props.onEdit(this.props.id, value);
+  },
+
+  handleKeyDownOnEditTextInput: function(e)  {
     e.stopPropagation();
     const value = e.target.value;
 
     switch (e.key) {
       case 'Escape':
-				this.textField.innerHTML = this.prevTextFieldHTML;
-				this.setState({ edit: false });
-				break;
-				
-			case 'Enter':
-				this.setState({ edit: false });
-        if (!value || this.props.task === value) {
-          this.textField.innerHTML = this.prevTextFieldHTML;
-          return;
-        }
-				this.props.onEdit(this.props.id, e.target.value);
+      case 'Enter':
+        e.target.onblur = function() {};
+        this.handleEdit(value);
 				break;
 				
       default:
@@ -788,7 +790,12 @@ Todolist.Item = React.createClass({
     }
   },
 
-  handleEdit: function() {
+  handleBlurOnEditTextInput: function(e)  {
+    const value = e.target.value;
+    this.handleEdit(value);
+  },
+
+  handleClickOnEditButton: function() {
 		this.setState({ edit: true });
 
     this.prevTextFieldHTML = this.textField.innerHTML;
@@ -796,9 +803,10 @@ Todolist.Item = React.createClass({
     var input = document.createElement('input');
     input.value = this.props.task;
     input.className = 'Todo__Input';
-		input.onkeydown = this.onKeyDown.bind(this);
-		input.onclick = function(e) { e.stopPropagation(); e.preventDefault(); }
-
+    input.onkeydown = this.handleKeyDownOnEditTextInput.bind(this);
+    input.onblur = this.handleBlurOnEditTextInput.bind(this);
+    input.onclick = function(e) { e.stopPropagation(); e.preventDefault(); }
+    
     this.textField.innerHTML = "";
     this.textField.appendChild(input);
 
@@ -813,7 +821,8 @@ Todolist.Item = React.createClass({
 		});
 
 		var todoEditClasses = classNames({
-			'Todo__Edit': true,
+      'Todo__Edit': true,
+      'Todo__Edit--onChecked': this.props.done,
 			'Todo__Edit--onedit': this.state.edit
 		});
 
@@ -833,7 +842,7 @@ Todolist.Item = React.createClass({
           ref={function (text) { this.textField = text; }.bind(this)}
           onClick={this.handleCheck.bind(this)}
           dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
-				<button className={todoEditClasses} onClick={this.handleEdit.bind(this)}>edit</button>
+				<button className={todoEditClasses} onClick={this.handleClickOnEditButton.bind(this)}>edit</button>
         <button className={todoDeleteClasses} onClick={this.handleDelete.bind(this)}>✖</button>
         <span className="Todo__CreatedOn">
           {moment(this.props.createdOn, 'x').fromNow()}
