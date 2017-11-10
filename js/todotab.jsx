@@ -155,7 +155,7 @@ Layout.Home = React.createClass({
 	addTask: function(task)	{
 		var matches = [];
 
-    if (!task) {
+    if(task.trim().length <= 0)  {
       return false;
     }
 
@@ -259,6 +259,9 @@ Layout.Customize = React.createClass({
 	},
 
 	addActivity: function(name) {
+    if(name.trim().length <= 0)  {
+      return false;
+    }
 
 		name = name.replace(/\s+$/, '');
 		
@@ -724,7 +727,6 @@ Todolist.Item = React.createClass({
 			var matches = [];
 
       tags.forEach(function(tag) {	
-
 				matches = task.match(tokenRegEx(tag.name));
 				if(matches) {
 					matches.forEach(function(match)	{
@@ -732,7 +734,6 @@ Todolist.Item = React.createClass({
 					}, this);
 				}
 			}, this);
-			debugger
     }
 
 		var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
