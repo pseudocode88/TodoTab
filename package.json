@@ -1,0 +1,25 @@
+{
+  "name": "todotab",
+  "version": "1.0.0",
+  "description": "A simple todo list of new tab",
+  "main": "background.js",
+  "scripts": {
+    "build": "node compile.js",
+    "watch": "nodemon --exec 'node compile.js' -w js/todotab.jsx -w js/store.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/27ae60/todo-tab.git"
+  },
+  "author": "jaison@27ae60.com",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/27ae60/todo-tab#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "minifier": "^0.8.1",
+    "nodemon": "^1.12.1"
+  }
+}
