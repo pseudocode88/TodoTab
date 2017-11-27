@@ -27,6 +27,9 @@ var Activities = [
         name: 'buy',
         color: 'carrot'
     },{
+      name: 'pay',
+      color: 'carrot'
+    },{
         name: 'get',
         color: 'carrot'
     },{
