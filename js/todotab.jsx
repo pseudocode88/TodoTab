@@ -828,22 +828,31 @@ Todolist.Item = React.createClass({
 			'Todo__Delete--onedit': this.state.edit
 		});
 
+		var todoTaskClassesOnEdit = classNames({
+			'Todo__Task': true,
+			'Todo__Task--onedit': this.state.edit
+		});
+
 		return (
 			<li className={todoClasses}
 			draggable={!this.props.done}
 			data-id={this.props.index}>
-			<span className="Todo__Check">
-			<i onClick={this.handleCheck.bind(this)}></i>
-			</span>
-			<p className="Todo__Task"
-			ref={function (text) { this.textField = text; }.bind(this)}
-			onClick={this.handleCheck.bind(this)}
-			dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
-			<button className={todoEditClasses} onClick={this.handleClickOnEditButton.bind(this)}>edit</button>
-			<button className={todoDeleteClasses} onClick={this.handleDelete.bind(this)}>✖</button>
-			<span className="Todo__CreatedOn">
-			{moment(this.props.createdOn, 'x').fromNow()}
-			</span>
+				<span className="Todo__Check">
+					<i onClick={this.handleCheck.bind(this)}></i>
+				</span>
+				
+				<p className={todoTaskClassesOnEdit}
+					ref={function (text) { this.textField = text; }.bind(this)}
+					onClick={this.handleCheck.bind(this)}
+					dangerouslySetInnerHTML={this.createColourCoding(this.props.task, this.props.tags, this.props.done)}/>
+
+				<button className={todoEditClasses} onClick={this.handleClickOnEditButton.bind(this)}>edit</button>
+			
+				<button className={todoDeleteClasses} onClick={this.handleDelete.bind(this)}>✖</button>
+			
+				<span className="Todo__CreatedOn">
+					{moment(this.props.createdOn, 'x').fromNow()}
+				</span>
 			</li>
 			);
 	}
