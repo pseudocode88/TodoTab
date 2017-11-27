@@ -386,7 +386,7 @@ Layout.Help.WhatsNew = React.createClass({
 			If you have more than two completed task, todo tab will <span className="Color--belizehole">hide the rest</span> and keep the todo list always small.
 			</li>
 			<li>
-			Made <span className="Color--wisteria">urls shorten and clickable</span> in task description.
+			<span className="Color--wisteria">Shorter and clickable URLs</span> in task description.
 			</li>
 			<li>
 			If you have more than five completed task, todo tab will give you option to <span className="Color--pomegranate">clear all compeleted task</span> in one go.
