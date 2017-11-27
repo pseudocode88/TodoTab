@@ -740,9 +740,10 @@ Todolist.Item = React.createClass({
 		if(!done)	{
 			var matches = [];
 
-			console.log(tags);
-			tags.forEach(function(tag) {	
-				task = task.trim().replace(tokenRegEx(tag.name), this.wrapColourCoding(tag.name, tag.color));
+			tags.forEach(function(tag) {
+                if (tag && tag.name && task) {
+				  task = task.trim().replace(tokenRegEx(tag.name), this.wrapColourCoding(tag.name, tag.color));
+                }
 			}, this);
 		}
 
