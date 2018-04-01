@@ -18,7 +18,9 @@
     ]
   },
 
-  "options_page": "welcome.html",
+  "options_ui": {
+    "page": "welcome.html"
+  },
 
   "icons":  {
     "48": "images/icon48.png",
