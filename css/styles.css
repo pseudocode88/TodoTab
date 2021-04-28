@@ -751,3 +751,22 @@ button {
 .Activity__Delete:hover {
   color: #e74c3c;
 }
+
+.Donate {
+  background-color: #ffbc00;
+  padding: 8px 16px;
+  display: inline-block;
+  height: 30px;
+  border-radius: 40px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #333;
+  position: fixed;
+  bottom: 19px;
+  left: 172px;
+}
+
+.Donate:hover {
+  background-color: #efaf00;
+}
