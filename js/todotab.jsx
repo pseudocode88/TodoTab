@@ -26,8 +26,15 @@ function escapeRegExp(str) {
 	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\@\#\~\_]/g, "\\$&");
 }
 
+function getRegExp(escapedToken) {
+	var beginsWith = /^[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+	var endsIn = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]$/
+
+	return (beginsWith.test(escapedToken) ? '\\B' : '\\b') + escapedToken + (endsIn.test(escapedToken) ? '\\B' : '\\b');
+}
+
 function tokenRegEx(token) {
-	return new RegExp("(?:^|\\s|" + escapeRegExp(token) + ")(?:$|\\s)", "gi");
+	return new RegExp(getRegExp(escapeRegExp(token)), "gi");
 }
 
 var TodoStore = new Store('TodoTab-Tasks', todoPostSave);
@@ -915,7 +922,10 @@ var Footer = React.createClass({
 	render: function()	{
 		return (
 			<footer>
-			<nav className="Links">{this.links()}</nav>
+			<nav className="Links">
+				{this.links()}
+			</nav>
+			<a href="https://www.buymeacoffee.com/jaisonjustus" className="Donate" target="_blank">Donate</a>
 			<Footer.Images/>
 			</footer>
 			);
@@ -1134,9 +1144,7 @@ function addTask(task)	{
 
 function install()	{
 	var version = localStorage.getItem('TodoTab-Version');
-
 	if(version === null) {
-
 		if(ActivityStore.get().length <= 0)	{
 			Activities.forEach(addActivity);	
 		}
@@ -1148,12 +1156,16 @@ function install()	{
 			tasks.forEach(addTask);
 		}
 		
-		mixpanel.track("Update to v2.0.0");
-		localStorage.setItem('TodoTab-Version', '2.0.0');
+		mixpanel.track("Update to v2.0.1");
+		localStorage.setItem('TodoTab-Version', '2.0.1');
+
+	} else if(version === '2.0.0')	{
+		mixpanel.track("Update to v2.0.1");
+		localStorage.setItem('TodoTab-Version', '2.0.1');
 	}
 
-	if(ActivityStore.get().length <= 0
-		&& localStorage.getItem('TodoTab-Status') === null)	{
+	if(ActivityStore.get().length <= 0 && 
+		localStorage.getItem('TodoTab-Status') === null)	{
 
 		Activities.forEach(function(Activity)	{
 			Activity.id = uuid();
@@ -1162,10 +1174,11 @@ function install()	{
 			localStorage.setItem('TodoTab-Status', 'installed');
 		});
 
-}
+	}
 }
 
 window.onload = function() {
+	console.log('Welcome to TodoTab!');
 	mixpanel.init("752c57b1305ae840fe06398f966b22cb");
 	install();
 	ReactDOM.render(<Layout/>, document.getElementById('app'));
