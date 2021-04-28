@@ -26,8 +26,15 @@ function escapeRegExp(str) {
 	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\@\#\~\_]/g, "\\$&");
 }
 
+function getRegExp(escapedToken) {
+	var beginsWith = /^[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+	var endsIn = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]$/
+
+	return (beginsWith.test(escapedToken) ? '\\B' : '\\b') + escapedToken + (endsIn.test(escapedToken) ? '\\B' : '\\b');
+}
+
 function tokenRegEx(token) {
-	return new RegExp("(?:^|\\s|" + escapeRegExp(token) + ")(?:$|\\s)", "gi");
+	return new RegExp(getRegExp(escapeRegExp(token)), "gi");
 }
 
 var TodoStore = new Store('TodoTab-Tasks', todoPostSave);
