@@ -361,7 +361,7 @@ Layout.Help.Heading = React.createClass({
 			<div className="Help__Section">
 			<img src="images/icon128.png" className="Logo"/>
 			<h1>Todo Tab</h1>
-			<p>A privacy first to-do app - version 2.0.0</p>
+			<p>A privacy first to-do app - version 2.0.1</p>
 			</div>
 			)
 	}
@@ -372,7 +372,7 @@ Layout.Help.WhatsNew = React.createClass({
 		return (
 			<div className="Features Features--whatsnew">
 			<blockquote>
-			“What's new 🎉 on version 2.0.0?”
+			“What's new 🎉 on version 2.0.1?”
 			</blockquote>
 
 			<ol className="WhatsNew">
