@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "Todo Tab",
   "version": "2.0.1",
@@ -7,15 +7,13 @@
   "author": "27AE60",
   "homepage_url": "http://27ae60.com",
 
-  "browser_action":  {
+  "action":  {
     "default_title": "Todo Tab",
     "default_icon": "images/icon128.png"
   },
 
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "service_worker": "background.js"
   },
 
   "options_ui": {
