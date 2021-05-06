@@ -454,11 +454,11 @@ Layout.Help.Credits = React.createClass({
 		return (
 			<div className="Features">
 			<blockquote>“Made with love”</blockquote>
-			<p>This tool is designed and developed by a triad called <a href="http://27ae60.com">27AE60</a> based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
+			<p>This tool is designed and developed by a triad called 27AE60 based out of Bengaluru, India. We as a team love developing tools and researching product ideas. We build this tool to keep us productive as well as you. Cheers!</p>
 			<Layout.Help.Subscribe/>
 			<p><b>Credits:</b> Jaison Justus, Rabi C Shah & Suyash Katiyar.</p>
 			<p><b>Special thanks for writing us a feedback:</b> Les Viragh Jr., Gary Elle, Nicole Fetscher, Kimberly Wolfson, Jake Carni, Sridhar Rajendran, Jocelyn, Arun Chandrasekaran, Sudarsh M.S, Russell Jamison and Kiran Savadatti</p>
-			<blockquote>Send us your feebacks at: <a href="mailto:hello@27ae60.com">hello@27ae60.com</a></blockquote>
+			<blockquote>Send us your feebacks at: <a href="mailto:27ae60@protonmail.com">27ae60@protonmail.com</a></blockquote>
 			</div>
 			)
 	}
